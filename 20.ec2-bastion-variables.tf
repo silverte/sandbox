@@ -5,13 +5,6 @@ variable "ec2_bastion_instance_type" {
   default     = "t4g.medium"
 }
 
-# EC2 User Data
-variable "ec2_bastion_user_data" {
-  description = "EC2 User Data"
-  type        = string
-  default     = ""
-}
-
 # EC2 Root Volume size
 variable "ec2_bastion_root_volume_size" {
   description = "EC2 Root Volume size"

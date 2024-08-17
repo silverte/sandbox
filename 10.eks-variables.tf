@@ -1,10 +1,3 @@
-# EKS Cluster Name
-variable "cluster_name" {
-  description = "EKS Cluster Name"
-  type        = string
-  default     = "eks"
-}
-
 # EKS Cluster Version
 variable "cluster_version" {
   description = "EKS Cluster Version"
