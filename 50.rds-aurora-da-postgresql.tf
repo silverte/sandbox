@@ -3,7 +3,7 @@
 ################################################################################
 module "aurora-da-postgresql" {
   source = "terraform-aws-modules/rds-aurora/aws"
-  name            = "rds-${var.service}-${var.rds_aurora_da_cluster_name}-${var.environment}"
+  name            = "rds-${var.service}-${var.environment}-${var.rds_aurora_da_cluster_name}"
   engine          = var.rds_aurora_da_cluster_engine
   engine_version  = var.rds_aurora_da_cluster_engine_version
   master_username = "postgresql"
@@ -19,12 +19,12 @@ module "aurora-da-postgresql" {
   db_subnet_group_name = module.vpc.database_subnet_group_name
   publicly_accessible = false
   
-  security_group_name  = "scg-${var.service}-${var.rds_aurora_da_cluster_name}-${var.environment}"
+  security_group_name  = "scg-${var.service}-${var.environment}-${var.rds_aurora_da_cluster_name}"
   security_group_description = "Aurora PostgreSQL DA Security Group"
   security_group_tags = merge(
     local.tags,
     {
-      "Name" = "scg-${var.service}-${var.rds_aurora_da_cluster_name}-${var.environment}"
+      "Name" = "scg-${var.service}-${var.environment}-${var.rds_aurora_da_cluster_name}"
     }
   )
   security_group_rules = {
@@ -40,7 +40,7 @@ module "aurora-da-postgresql" {
   backup_retention_period = 1
   deletion_protection     = false
   create_db_cluster_parameter_group      = true
-  db_cluster_parameter_group_name        = "cpg-${var.service}-${var.rds_aurora_da_cluster_name}-${var.environment}"
+  db_cluster_parameter_group_name        = "cpg-${var.service}-${var.environment}-${var.rds_aurora_da_cluster_name}"
   db_cluster_parameter_group_family      = "aurora-postgresql14"
   db_cluster_parameter_group_description = "aurora cluster parameter group"
   db_cluster_parameter_group_parameters = [
@@ -55,7 +55,7 @@ module "aurora-da-postgresql" {
     }
   ]
   create_db_parameter_group      = true
-  db_parameter_group_name        = "pg-${var.service}-${var.rds_aurora_da_cluster_name}-${var.environment}"
+  db_parameter_group_name        = "pg-${var.service}-${var.environment}-${var.rds_aurora_da_cluster_name}"
   db_parameter_group_family      = "aurora-postgresql14"
   db_parameter_group_description = "DB parameter group"
   db_parameter_group_parameters = [
@@ -70,7 +70,7 @@ module "aurora-da-postgresql" {
   tags = merge(
     local.tags,
     {
-      "Name" = "rds-${var.service}-${var.rds_aurora_da_cluster_name}-${var.environment}"
+      "Name" = "rds-${var.service}-${var.environment}-${var.rds_aurora_da_cluster_name}"
     },
   )
 }

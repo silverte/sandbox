@@ -5,7 +5,7 @@
 module "ec2_meta_sharp" {
   source = "terraform-aws-modules/ec2-instance/aws"
 
-  name = "ec2-${var.service}-meta-sharp-${var.environment}"
+  name = "ec2-${var.service}-${var.environment}-meta-sharp"
 
   ami                         = data.aws_ami.ec2_meta_sharp.id
   instance_type               = var.ec2_meta_sharp_instance_type
@@ -65,7 +65,7 @@ module "ec2_meta_sharp" {
   tags = merge(
     local.tags,
     {
-      "Name" = "ec2-${var.service}-meta-sharp-${var.environment}"
+      "Name" = "ec2-${var.service}-${var.environment}-meta-sharp"
     },
   )
 }
@@ -74,7 +74,7 @@ module "security_group_ec2_meta_sharp" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
 
-  name        = "scg-${var.service}-meta-sharp-${var.environment}"
+  name        = "scg-${var.service}-${var.environment}-meta-sharp"
   description = "Security group for EC2 Nexus"
   vpc_id      = module.vpc.vpc_id
 
@@ -85,7 +85,7 @@ module "security_group_ec2_meta_sharp" {
   tags = merge(
     local.tags,
     {
-      "Name" = "scg-${var.service}-meta-sharp-${var.environment}"
+      "Name" = "scg-${var.service}-${var.environment}-meta-sharp"
     },
   )
 }
@@ -103,13 +103,13 @@ data "aws_ami" "ec2_meta_sharp" {
 module "key_pair_meta_sharp" {
   source = "terraform-aws-modules/key-pair/aws"
 
-  key_name           = "key-${var.service}-meta-sharp-${var.environment}"
+  key_name           = "key-${var.service}-${var.environment}-meta-sharp"
   create_private_key = true
 
   tags = merge(
     local.tags,
     {
-      "Name" = "key-${var.service}-meta-sharp-${var.environment}"
+      "Name" = "key-${var.service}-${var.environment}-meta-sharp"
     },
   )
 }

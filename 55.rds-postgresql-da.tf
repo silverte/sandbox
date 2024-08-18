@@ -5,13 +5,13 @@
 module "rds-postgresql-da" {
   source = "terraform-aws-modules/rds/aws"
 
-  identifier = "rds-${var.service}-${var.rds_postgresql_da_name}-${var.environment}"
+  identifier = "rds-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
 
   engine               = var.rds_postgresql_da_engine
   engine_version       = var.rds_postgresql_da_engine_version
   family               = "postgres14" # DB parameter group
   major_engine_version = "14"         # DB option group
-  parameter_group_name = "pg-${var.service}-${var.rds_postgresql_da_name}-${var.environment}"
+  parameter_group_name = "pg-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
   instance_class       = var.rds_postgresql_da_instance_class
   create_db_option_group = false
 
@@ -64,7 +64,7 @@ module "rds-postgresql-da" {
   tags = merge(
     local.tags,
     {
-      "Name" = "rds-${var.service}-${var.rds_postgresql_da_name}-${var.environment}"
+      "Name" = "rds-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
     },
   )
 }
@@ -115,7 +115,7 @@ module "security_group_rds_postgresql_da" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 5.0"
 
-  name        = "scg-${var.service}-${var.rds_postgresql_da_name}-${var.environment}"
+  name        = "scg-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
   description = "PostgreSQL example security group"
   vpc_id      = module.vpc.vpc_id
 
@@ -133,7 +133,7 @@ module "security_group_rds_postgresql_da" {
   tags = merge(
     local.tags,
     {
-      "Name" = "scg-${var.service}-${var.rds_postgresql_da_name}-${var.environment}"
+      "Name" = "scg-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
     },
   )
 }

@@ -19,6 +19,6 @@ module "kms-ebs" {
     local.tags,
     {
       "Name" = "kms-${var.service}-ebs"
-    },
+    }
   )
 }

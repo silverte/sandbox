@@ -5,7 +5,7 @@
 module "ec2_nexus" {
   source = "terraform-aws-modules/ec2-instance/aws"
 
-  name = "ec2-${var.service}-nexus-${var.environment}"
+  name = "ec2-${var.service}-${var.environment}-nexus"
 
   ami                         = data.aws_ami.ec2_nexus.id
   instance_type               = var.ec2_nexus_instance_type
@@ -65,7 +65,7 @@ module "ec2_nexus" {
   tags = merge(
     local.tags,
     {
-      "Name" = "ec2-${var.service}-nexus-${var.environment}"
+      "Name" = "ec2-${var.service}-${var.environment}-nexus"
     },
   )
 }
@@ -74,7 +74,7 @@ module "security_group_ec2_nexus" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
 
-  name        = "scg-${var.service}-nexus-${var.environment}"
+  name        = "scg-${var.service}-${var.environment}-nexus"
   description = "Security group for EC2 Nexus"
   vpc_id      = module.vpc.vpc_id
 
@@ -85,7 +85,7 @@ module "security_group_ec2_nexus" {
   tags = merge(
     local.tags,
     {
-      "Name" = "scg-${var.service}-nexus-${var.environment}"
+      "Name" = "scg-${var.service}-${var.environment}-nexus"
     },
   )
 }
@@ -103,13 +103,13 @@ data "aws_ami" "ec2_nexus" {
 module "key_pair_nexus" {
   source = "terraform-aws-modules/key-pair/aws"
 
-  key_name           = "key-${var.service}-nexus-${var.environment}"
+  key_name           = "key-${var.service}-${var.environment}-nexus"
   create_private_key = true
 
   tags = merge(
     local.tags,
     {
-      "Name" = "key-${var.service}-nexus-${var.environment}"
+      "Name" = "key-${var.service}-${var.environment}-nexus"
     },
   )
 }

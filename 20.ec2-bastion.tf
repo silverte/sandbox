@@ -5,7 +5,7 @@
 module "ec2_bastion" {
   source = "terraform-aws-modules/ec2-instance/aws"
 
-  name = "ec2-${var.service}-bastion-${var.environment}"
+  name = "ec2-${var.service}-${var.environment}-bastion"
 
   ami                         = data.aws_ami.ec2_bastion.id
   instance_type               = var.ec2_bastion_instance_type
@@ -65,7 +65,7 @@ module "ec2_bastion" {
   tags = merge(
     local.tags,
     {
-      "Name" = "ec2-${var.service}-bastion-${var.environment}"
+      "Name" = "ec2-${var.service}-${var.environment}-bastion"
     },
   )
 }
@@ -74,7 +74,7 @@ module "security_group_ec2_bastion" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
 
-  name        = "scg-${var.service}-bastion-${var.environment}"
+  name        = "scg-${var.service}-${var.environment}-bastion"
   description = "Security group for EC2 Bastion"
   vpc_id      = module.vpc.vpc_id
 
@@ -85,7 +85,7 @@ module "security_group_ec2_bastion" {
   tags = merge(
     local.tags,
     {
-      "Name" = "scg-${var.service}-bastion-${var.environment}"
+      "Name" = "scg-${var.service}-${var.environment}-bastion"
     },
   )
 }
@@ -103,13 +103,13 @@ data "aws_ami" "ec2_bastion" {
 module "key_pair_bastion" {
   source = "terraform-aws-modules/key-pair/aws"
 
-  key_name           = "key-${var.service}-bastion-${var.environment}"
+  key_name           = "key-${var.service}-${var.environment}-bastion"
   create_private_key = true
 
   tags = merge(
     local.tags,
     {
-      "Name" = "key-${var.service}-bastion-${var.environment}"
+      "Name" = "key-${var.service}-${var.environment}-bastion"
     },
   )
 }

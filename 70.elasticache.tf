@@ -5,7 +5,7 @@
 module "elasticache" {
   source = "terraform-aws-modules/elasticache/aws"
 
-  cluster_id               = "ec-${var.service}-${var.elasticache_cluster_name}-${var.environment}"
+  cluster_id               = "ec-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
   create_cluster           = true
   create_replication_group = false
 
@@ -17,12 +17,12 @@ module "elasticache" {
 
   # Security Group
   vpc_id = module.vpc.vpc_id
-  security_group_name = "scg-${var.service}-${var.elasticache_cluster_name}-${var.environment}"
+  security_group_name = "scg-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
   security_group_description = "elasticache for data"
   security_group_tags = merge(
     local.tags,
     {
-      "Name" = "scg-${var.service}-${var.elasticache_cluster_name}-${var.environment}"
+      "Name" = "scg-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
     }
   )
   security_group_rules = {
@@ -42,7 +42,7 @@ module "elasticache" {
 
   # Parameter Group
   create_parameter_group      = true
-  parameter_group_name        = "cpg-${var.service}-${var.elasticache_cluster_name}-${var.environment}"
+  parameter_group_name        = "cpg-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
   parameter_group_family      = "redis7"
   parameter_group_description = "elasticache parameter group"
   parameters = []
@@ -50,7 +50,7 @@ module "elasticache" {
   tags = merge(
     local.tags,
     {
-      "Name" = "ec-${var.service}-${var.elasticache_cluster_name}-${var.environment}"
+      "Name" = "ec-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
     },
   )
 }

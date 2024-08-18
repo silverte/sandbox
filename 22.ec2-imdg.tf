@@ -5,7 +5,7 @@
 module "ec2_imdg" {
   source = "terraform-aws-modules/ec2-instance/aws"
 
-  name = "ec2-${var.service}-imdg-${var.environment}"
+  name = "ec2-${var.service}-${var.environment}-imdg"
 
   ami                         = data.aws_ami.ec2_imdg.id
   instance_type               = var.ec2_imdg_instance_type
@@ -65,7 +65,7 @@ module "ec2_imdg" {
   tags = merge(
     local.tags,
     {
-      "Name" = "ec2-${var.service}-imdg-${var.environment}"
+      "Name" = "ec2-${var.service}-${var.environment}-imdg"
     },
   )
 }
@@ -74,7 +74,7 @@ module "security_group_ec2_imdg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
 
-  name        = "scg-${var.service}-imdg-${var.environment}"
+  name        = "scg-${var.service}-${var.environment}-imdg"
   description = "Security group for EC2 Nexus"
   vpc_id      = module.vpc.vpc_id
 
@@ -85,7 +85,7 @@ module "security_group_ec2_imdg" {
   tags = merge(
     local.tags,
     {
-      "Name" = "scg-${var.service}-imdg-${var.environment}"
+      "Name" = "scg-${var.service}-${var.environment}-imdg"
     },
   )
 }
@@ -103,13 +103,13 @@ data "aws_ami" "ec2_imdg" {
 module "key_pair_imdg" {
   source = "terraform-aws-modules/key-pair/aws"
 
-  key_name           = "key-${var.service}-imdg-${var.environment}"
+  key_name           = "key-${var.service}-${var.environment}-imdg"
   create_private_key = true
 
   tags = merge(
     local.tags,
     {
-      "Name" = "key-${var.service}-imdg-${var.environment}"
+      "Name" = "key-${var.service}-${var.environment}-imdg"
     },
   )
 }

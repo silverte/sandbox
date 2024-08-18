@@ -5,13 +5,13 @@
 module "rds-oracle-to" {
   source = "terraform-aws-modules/rds/aws"
 
-  identifier = "rds-${var.service}-${var.rds_oracle_to_name}-${var.environment}"
+  identifier = "rds-${var.service}-${var.environment}-${var.rds_oracle_to_name}"
 
   engine               = var.rds_oracle_to_engine
   engine_version       = var.rds_oracle_to_engine_version
   family               = var.rds_oracle_to_family               # DB parameter group
   major_engine_version = var.rds_oracle_to_major_engine_version # DB option group
-  parameter_group_name = "pg-${var.service}-${var.rds_oracle_to_name}-${var.environment}"
+  parameter_group_name = "pg-${var.service}-${var.environment}-${var.rds_oracle_to_name}"
   instance_class       = var.rds_oracle_to_instance_class
   license_model        = "bring-your-own-license"
   create_db_option_group = false
@@ -53,7 +53,7 @@ module "rds-oracle-to" {
   tags = merge(
     local.tags,
     {
-      "Name" = "rds-${var.service}-${var.rds_oracle_to_name}-${var.environment}"
+      "Name" = "rds-${var.service}-${var.environment}-${var.rds_oracle_to_name}"
     },
   )
 }
@@ -99,7 +99,7 @@ module "security_group_oracle_to" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 5.0"
 
-  name        = "scg-${var.service}-${var.rds_oracle_to_name}-${var.environment}"
+  name        = "scg-${var.service}-${var.environment}-${var.rds_oracle_to_name}"
   description = "Oracle security group"
   vpc_id      = module.vpc.vpc_id
 
@@ -117,7 +117,7 @@ module "security_group_oracle_to" {
   tags = merge(
     local.tags,
     {
-      "Name" = "scg-${var.service}-${var.rds_oracle_to_name}-${var.environment}"
+      "Name" = "scg-${var.service}-${var.environment}-${var.rds_oracle_to_name}"
     },
   )
 }
