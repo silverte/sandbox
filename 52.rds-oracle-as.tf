@@ -11,7 +11,7 @@ module "rds-oracle-as" {
   engine_version       = var.rds_oracle_as_engine_version
   family               = var.rds_oracle_as_family                # DB parameter group
   major_engine_version = var.rds_oracle_as_major_engine_version  # DB option group
-  parameter_group_name = "pg-${var.service}-${var.environment}-${var.rds_oracle_as_name}"
+  parameter_group_name = "rdspg-${var.service}-${var.environment}-${var.rds_oracle_as_name}"
   instance_class       = var.rds_oracle_as_instance_class
   license_model        = "bring-your-own-license"
   create_db_option_group = false

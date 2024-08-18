@@ -40,33 +40,33 @@ module "aurora-da-postgresql" {
   backup_retention_period = 1
   deletion_protection     = false
   create_db_cluster_parameter_group      = true
-  db_cluster_parameter_group_name        = "cpg-${var.service}-${var.environment}-${var.rds_aurora_da_cluster_name}"
+  db_cluster_parameter_group_name        = "rdspg-${var.service}-${var.environment}-${var.rds_aurora_da_cluster_name}"
   db_cluster_parameter_group_family      = "aurora-postgresql14"
   db_cluster_parameter_group_description = "aurora cluster parameter group"
   db_cluster_parameter_group_parameters = [
-    {
-      name         = "log_min_duration_statement"
-      value        = 4000
-      apply_method = "immediate"
-      }, {
-      name         = "rds.force_ssl"
-      value        = 1
-      apply_method = "immediate"
-    }
+    # {
+    #   name         = "log_min_duration_statement"
+    #   value        = 4000
+    #   apply_method = "immediate"
+    #   }, {
+    #   name         = "rds.force_ssl"
+    #   value        = 1
+    #   apply_method = "immediate"
+    # }
   ]
-  create_db_parameter_group      = true
-  db_parameter_group_name        = "pg-${var.service}-${var.environment}-${var.rds_aurora_da_cluster_name}"
-  db_parameter_group_family      = "aurora-postgresql14"
-  db_parameter_group_description = "DB parameter group"
-  db_parameter_group_parameters = [
-    {
-      name         = "log_min_duration_statement"
-      value        = 4000
-      apply_method = "immediate"
-    }
-  ]
-#   enabled_cloudwatch_logs_exports = ["postgresql"]
-#   create_cloudwatch_log_group     = true
+  # create_db_parameter_group      = true
+  # db_parameter_group_name        = "rdspg-${var.service}-${var.environment}-${var.rds_aurora_da_cluster_name}"
+  # db_parameter_group_family      = "aurora-postgresql14"
+  # db_parameter_group_description = "DB parameter group"
+  # db_parameter_group_parameters = [
+  #   {
+  #     name         = "log_min_duration_statement"
+  #     value        = 4000
+  #     apply_method = "immediate"
+  #   }
+  # ]
+  # enabled_cloudwatch_logs_exports = ["postgresql"]
+  # create_cloudwatch_log_group     = true
   tags = merge(
     local.tags,
     {

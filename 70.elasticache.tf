@@ -35,14 +35,14 @@ module "elasticache" {
   }
 
   # Subnet Group
-  subnet_group_name        = "esg-${var.service}-${var.environment}"
+  subnet_group_name        = "ecsg-${var.service}-${var.environment}"
   subnet_group_description = "elasticache subnet group"
   subnet_ids               = module.vpc.private_subnets
   availability_zone        = element(module.vpc.azs, 0)
 
   # Parameter Group
   create_parameter_group      = true
-  parameter_group_name        = "cpg-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
+  parameter_group_name        = "ecpg-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
   parameter_group_family      = "redis7"
   parameter_group_description = "elasticache parameter group"
   parameters = []
