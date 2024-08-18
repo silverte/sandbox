@@ -9,5 +9,6 @@ locals {
   tags = {
     owners      = local.owners
     environment = local.environment
+    service     = local.service
   }
 }
