@@ -4,6 +4,7 @@
 
 module "ec2_bastion" {
   source = "terraform-aws-modules/ec2-instance/aws"
+  create = var.create
 
   name = "ec2-${var.service}-${var.environment}-bastion"
 

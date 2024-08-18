@@ -4,6 +4,7 @@
 
 module "elasticache" {
   source = "terraform-aws-modules/elasticache/aws"
+  create = var.create
 
   cluster_id               = "ec-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
   create_cluster           = true

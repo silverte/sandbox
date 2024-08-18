@@ -4,6 +4,8 @@
 
 module "rds-oracle-as" {
   source = "terraform-aws-modules/rds/aws"
+  create_db_instance = var.create
+  create_db_parameter_group = var.create
 
   identifier = "rds-${var.service}-${var.environment}-${var.rds_oracle_as_name}"
 
@@ -98,6 +100,7 @@ module "rds-oracle-as" {
 module "security_group_oracle_as" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 5.0"
+  create  = var.create
 
   name        = "scg-${var.service}-${var.environment}-${var.rds_oracle_as_name}"
   description = "Oracle security group"

@@ -3,6 +3,8 @@
 ################################################################################
 module "aurora-sb-postgresql" {
   source = "terraform-aws-modules/rds-aurora/aws"
+  create = var.create
+
   name            = "rds-${var.service}-${var.environment}-${var.rds_aurora_cluster_name}"
   engine          = var.rds_aurora_cluster_engine
   engine_version  = var.rds_aurora_cluster_engine_version

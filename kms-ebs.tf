@@ -1,5 +1,6 @@
 module "kms-ebs" {
   source = "terraform-aws-modules/kms/aws"
+  create = var.create
 
   description = "EBS customer managed key"
   deletion_window_in_days = 7

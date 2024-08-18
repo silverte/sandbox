@@ -4,6 +4,7 @@
 
 module "ec2_nexus" {
   source = "terraform-aws-modules/ec2-instance/aws"
+  create = var.create
 
   name = "ec2-${var.service}-${var.environment}-nexus"
 

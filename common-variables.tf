@@ -31,3 +31,10 @@ variable "ec2_user_data" {
   type        = string
   default     = ""
 }
+
+# Resource Creation
+variable "create" {
+  description = "Resource Creation"
+  type        = bool
+  default     = true
+}

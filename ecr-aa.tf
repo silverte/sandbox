@@ -5,6 +5,7 @@ data "aws_caller_identity" "current" {}
 ################################################################################
 module "ecr-aa" {
   source = "terraform-aws-modules/ecr/aws"
+  create = var.create
 
   repository_name = "ecr-${var.service}-${var.environment}-aa"
 

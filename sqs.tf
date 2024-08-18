@@ -3,6 +3,7 @@
 ################################################################################
 module "sqs" {
   source = "terraform-aws-modules/sqs/aws"
+  create = var.create
 
   name = "sqs-${var.service}-${var.environment}"
 

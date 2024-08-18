@@ -4,6 +4,8 @@
 
 module "rds-postgresql-da" {
   source = "terraform-aws-modules/rds/aws"
+  create_db_instance = var.create
+  create_db_parameter_group = var.create
 
   identifier = "rds-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
 
@@ -114,6 +116,7 @@ module "rds-postgresql-da" {
 module "security_group_rds_postgresql_da" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 5.0"
+  create  = var.create
 
   name        = "scg-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
   description = "PostgreSQL example security group"
