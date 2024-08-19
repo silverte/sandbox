@@ -1,3 +1,7 @@
+################################################################################
+# KMS Module
+# reference: https://github.com/terraform-aws-modules/terraform-aws-kms
+################################################################################
 module "kms-ebs" {
   source = "terraform-aws-modules/kms/aws"
   create = var.create

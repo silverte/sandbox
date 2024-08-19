@@ -47,3 +47,24 @@ variable "rds_oracle_to_allocated_storage" {
   type        = number
   default     = 500
 }
+
+# RDS Oracle To-Be Username
+variable "rds_oracle_to_username" {
+  description = "RDS Oracle To-Be Username"
+  type        = string
+  default     = ""
+}
+
+# RDS Oracle To-Be Password
+variable "rds_oracle_to_password" {
+  description = "RDS Oracle To-Be Password"
+  type        = string
+  default     = ""
+}
+
+# RDS Oracle To-Be Port
+variable "rds_oracle_to_port" {
+  description = "RDS Oracle To-Be Port"
+  type        = number
+  default     = 1521
+}

@@ -1,5 +1,6 @@
 ################################################################################
 # EC2 Module
+# reference: https://github.com/terraform-aws-modules/terraform-aws-ec2-instance
 ################################################################################
 
 module "ec2_imdg" {

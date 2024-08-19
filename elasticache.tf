@@ -1,5 +1,6 @@
 ################################################################################
 # ElastiCache Module
+# reference: https://github.com/terraform-aws-modules/terraform-aws-elasticache
 ################################################################################
 
 module "elasticache" {

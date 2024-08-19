@@ -1,5 +1,6 @@
 ################################################################################
 # RDS Module
+# reference: https://github.com/terraform-aws-modules/terraform-aws-rds
 ################################################################################
 
 module "rds-oracle-as" {
@@ -25,9 +26,9 @@ module "rds-oracle-as" {
   # Make sure that database name is capitalized, otherwise RDS will try to recreate RDS instance every time
   # Oracle database name cannot be longer than 8 characters
   db_name  = "ORACLE"
-  username = "oracle"
-  password = "Ezwel1234!"
-  port     = 1521
+  username = var.rds_oracle_as_username
+  password = var.rds_oracle_as_password
+  port     = var.rds_oracle_as_port
 
   multi_az               = false
   availability_zone      = element(module.vpc.azs, 0)
@@ -109,8 +110,8 @@ module "security_group_oracle_as" {
   # ingress
   ingress_with_cidr_blocks = [
     {
-      from_port   = 1521
-      to_port     = 1521
+      from_port   = var.rds_oracle_as_port
+      to_port     = var.rds_oracle_as_port
       protocol    = "tcp"
       description = "Oracle access from within VPC"
       cidr_blocks = module.vpc.vpc_cidr_block

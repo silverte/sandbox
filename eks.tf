@@ -1,5 +1,8 @@
 ################################################################################
 # EKS Module
+# reference: https://github.com/terraform-aws-modules/terraform-aws-eks
+#            https://github.com/aws-ia/terraform-aws-eks-blueprints
+#            https://github.com/aws-ia/terraform-aws-eks-blueprints-addon
 ################################################################################
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"

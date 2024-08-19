@@ -46,3 +46,24 @@ variable "rds_postgresql_da_allocated_storage" {
   type        = number
   default     = 500
 }
+
+# RDS PostgreSQL DA Username
+variable "rds_postgresql_da_username" {
+  description = "RDS PostgreSQL DA Username"
+  type        = string
+  default     = ""
+}
+
+# RDS PostgreSQL DA Password
+variable "rds_postgresql_da_password" {
+  description = "RDS PostgreSQL DA Password"
+  type        = string
+  default     = ""
+}
+
+# RDS PostgreSQL DA Port
+variable "rds_postgresql_da_port" {
+  description = "RDS PostgreSQL DA Port"
+  type        = number
+  default     = 1521
+}

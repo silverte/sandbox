@@ -1,5 +1,6 @@
 ################################################################################
 # RDS Module
+# reference: https://github.com/terraform-aws-modules/terraform-aws-rds
 ################################################################################
 
 module "rds-postgresql-da" {
@@ -25,9 +26,9 @@ module "rds-postgresql-da" {
   # "Error creating DB Instance: InvalidParameterValue: MasterUsername
   # user cannot be used as it is a reserved word used by the engine"
   db_name  = "Postgresql"
-  username = "postgresql"
-  password = "Ezwel1234!"
-  port     = 5432
+  username = var.rds_postgresql_da_username
+  password = var.rds_postgresql_da_password
+  port     = var.rds_postgresql_da_port
 
   multi_az               = false
   availability_zone      = element(module.vpc.azs, 0)
@@ -125,8 +126,8 @@ module "security_group_rds_postgresql_da" {
   # ingress
   ingress_with_cidr_blocks = [
     {
-      from_port   = 5432
-      to_port     = 5432
+      from_port   = var.rds_postgresql_da_port
+      to_port     = var.rds_postgresql_da_port
       protocol    = "tcp"
       description = "PostgreSQL access from within VPC"
       cidr_blocks = module.vpc.vpc_cidr_block

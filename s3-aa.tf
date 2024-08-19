@@ -1,3 +1,8 @@
+################################################################################
+# S3 Module
+# reference: https://github.com/terraform-aws-modules/terraform-aws-s3-bucket
+#            https://github.com/terraform-aws-modules/terraform-aws-s3-object
+################################################################################
 module "simple_bucket" {
   source = "terraform-aws-modules/s3-bucket/aws"
   create_bucket = var.create

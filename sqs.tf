@@ -1,5 +1,6 @@
 ################################################################################
 # SQS Module
+# reference: https://github.com/terraform-aws-modules/terraform-aws-sqs
 ################################################################################
 module "sqs" {
   source = "terraform-aws-modules/sqs/aws"

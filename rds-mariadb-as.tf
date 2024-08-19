@@ -1,7 +1,7 @@
 ################################################################################
 # RDS Module
+# reference: https://github.com/terraform-aws-modules/terraform-aws-rds
 ################################################################################
-
 module "rds-maria-as" {
   source = "terraform-aws-modules/rds/aws"
   create_db_instance = var.create
@@ -25,9 +25,9 @@ module "rds-maria-as" {
   # "Error creating DB Instance: InvalidParameterValue: MasterUsername
   # user cannot be used as it is a reserved word used by the engine"
   db_name  = "MariaDB"
-  username = "mariadb"
-  password = "Ezwel1234!"
-  port     = 3306
+  username = var.rds_mariadb_as_username
+  password = var.rds_mariadb_as_password
+  port     = var.rds_mariadb_as_port
 
   multi_az               = false
   availability_zone      = element(module.vpc.azs, 0)
@@ -125,8 +125,8 @@ module "security_group_rds_maria_as" {
   # ingress
   ingress_with_cidr_blocks = [
     {
-      from_port   = 3306
-      to_port     = 3306
+      from_port   = var.rds_mariadb_as_port
+      to_port     = var.rds_mariadb_as_port
       protocol    = "tcp"
       description = "PostgreSQL access from within VPC"
       cidr_blocks = module.vpc.vpc_cidr_block

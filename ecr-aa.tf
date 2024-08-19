@@ -1,7 +1,6 @@
-data "aws_caller_identity" "current" {}
-
 ################################################################################
 # ECR Repository
+# reference: https://github.com/terraform-aws-modules/terraform-aws-ecr
 ################################################################################
 module "ecr-aa" {
   source = "terraform-aws-modules/ecr/aws"
@@ -64,3 +63,5 @@ module "ecr-aa" {
     }
   )
 }
+
+data "aws_caller_identity" "current" {}

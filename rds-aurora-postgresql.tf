@@ -1,5 +1,6 @@
 ################################################################################
 # RDS Aurora Module
+# reference: https://github.com/terraform-aws-modules/terraform-aws-rds-aurora
 ################################################################################
 module "aurora-sb-postgresql" {
   source = "terraform-aws-modules/rds-aurora/aws"
@@ -8,8 +9,9 @@ module "aurora-sb-postgresql" {
   name            = "rds-${var.service}-${var.environment}-${var.rds_aurora_cluster_name}"
   engine          = var.rds_aurora_cluster_engine
   engine_version  = var.rds_aurora_cluster_engine_version
-  master_username = "postgresql"
-  master_password = "Ezwel1234!"
+  master_username = var.rds_auroa_master_username
+  master_password = var.rds_auroa_master_password
+  port            = var.rds_auroa_port
   instances = {
     1 = {
       instance_class          = var.rds_aurora_cluster_instance_class

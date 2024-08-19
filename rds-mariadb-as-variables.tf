@@ -46,3 +46,24 @@ variable "rds_mariadb_as_allocated_storage" {
   type        = number
   default     = 500
 }
+
+# RDS MariaDB As-Is Username
+variable "rds_mariadb_as_username" {
+  description = "RDS MariaDB As-Is Username"
+  type        = string
+  default     = ""
+}
+
+# RDS MariaDB As-Is Password
+variable "rds_mariadb_as_password" {
+  description = "RDS MariaDB As-Is Password"
+  type        = string
+  default     = ""
+}
+
+# RDS MariaDB As-Is Port
+variable "rds_mariadb_as_port" {
+  description = "RDS MariaDB As-Is Port"
+  type        = number
+  default     = 3306
+}
