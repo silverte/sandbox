@@ -25,13 +25,6 @@ variable "owners" {
   default     = "born2k"
 }
 
-# EC2 User Data
-variable "ec2_user_data" {
-  description = "EC2 User Data"
-  type        = string
-  default     = ""
-}
-
 # Resource Creation
 variable "create" {
   description = "Resource Creation"

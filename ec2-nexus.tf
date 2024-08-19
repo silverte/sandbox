@@ -25,8 +25,8 @@ module "ec2_nexus" {
   # }
 
   # https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/hibernating-prerequisites.html#hibernation-prereqs-supported-amis
-  hibernation = false 
-  user_data_base64            = base64encode(var.ec2_user_data)
+  hibernation = false
+  user_data_base64            = base64encode(file("./user_data.sh"))
   user_data_replace_on_change = true
 
   metadata_options = {
