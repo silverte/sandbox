@@ -16,13 +16,13 @@ module "ec2_imdg" {
   vpc_security_group_ids      = [module.security_group_ec2_imdg.security_group_id]
   associate_public_ip_address = false
   disable_api_stop            = false
-  key_name                    = module.key_pair_imdg.key_pair_name
+  # key_name                    = module.key_pair_imdg.key_pair_name
 
-  create_iam_instance_profile = true
-  iam_role_description        = "IAM role for EC2 instance"
-  iam_role_policies = {
-    AdministratorAccess = "arn:aws:iam::aws:policy/AdministratorAccess"
-  }
+  # create_iam_instance_profile = true
+  # iam_role_description        = "IAM role for EC2 instance"
+  # iam_role_policies = {
+  #   AdministratorAccess = "arn:aws:iam::aws:policy/AdministratorAccess"
+  # }
 
   # https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/hibernating-prerequisites.html#hibernation-prereqs-supported-amis
   hibernation = false 
@@ -102,16 +102,16 @@ data "aws_ami" "ec2_imdg" {
   }
 }
 
-module "key_pair_imdg" {
-  source = "terraform-aws-modules/key-pair/aws"
+# module "key_pair_imdg" {
+#   source = "terraform-aws-modules/key-pair/aws"
 
-  key_name           = "key-${var.service}-${var.environment}-imdg"
-  create_private_key = true
+#   key_name           = "key-${var.service}-${var.environment}-imdg"
+#   create_private_key = true
 
-  tags = merge(
-    local.tags,
-    {
-      "Name" = "key-${var.service}-${var.environment}-imdg"
-    },
-  )
-}
+#   tags = merge(
+#     local.tags,
+#     {
+#       "Name" = "key-${var.service}-${var.environment}-imdg"
+#     },
+#   )
+# }

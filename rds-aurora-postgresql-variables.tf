@@ -27,35 +27,21 @@ variable "rds_aurora_cluster_instance_class" {
 }
 
 # RDS Aurora Master Username
-variable "rds_auroa_master_username" {
+variable "rds_aurora_master_username" {
   description = "RDS Aurora Master Username"
   type        = string
   default     = ""
 }
 
 # RDS Aurora Master Password
-variable "rds_auroa_master_password" {
-  description = "RDS Aurora Master Password"
-  type        = string
-  default     = ""
-}
-
-# RDS Aurora Master Username
-variable "rds_auroa_master_username" {
-  description = "RDS Aurora Master Username"
-  type        = string
-  default     = ""
-}
-
-# RDS Aurora Master Password
-variable "rds_auroa_master_password" {
+variable "rds_aurora_master_password" {
   description = "RDS Aurora Master Password"
   type        = string
   default     = ""
 }
 
 # RDS Aurora Port
-variable "rds_auroa_port" {
+variable "rds_aurora_port" {
   description = "RDS Aurora Port"
   type        = number
   default     = 5432

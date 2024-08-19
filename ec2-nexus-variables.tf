@@ -23,5 +23,5 @@ variable "ec2_nexus_ebs_volume_size" {
 variable "ec2_nexus_ami_filter_value" {
   description = "EC2 AMI Filter value"
   type        = string
-  default     = ""
+  default     = "al2023-ami-2023.5.20240805.0-kernel-6.1-arm64"
 }
