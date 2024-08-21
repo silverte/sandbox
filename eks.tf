@@ -75,7 +75,7 @@ module "eks" {
         # The pods that do not tolerate this taint should run on nodes created by Karpenter
         addons = {
           key    = "CriticalAddonsOnly"
-          value  = "true"
+          value  = "Exists"
           effect = "NO_SCHEDULE"
         },
       }

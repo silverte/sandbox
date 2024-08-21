@@ -40,6 +40,7 @@ module "ec2_imdg" {
   root_block_device = [
     {
       encrypted   = true
+      kms_key_id  = module.kms-ebs.key_arn
       volume_type = "gp3"
     #   throughput  = 200 # default: 125
       volume_size = var.ec2_imdg_root_volume_size

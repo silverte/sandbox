@@ -40,6 +40,7 @@ module "ec2_meta_sharp" {
   root_block_device = [
     {
       encrypted   = true
+      kms_key_id  = module.kms-ebs.key_arn
       volume_type = "gp3"
     #   throughput  = 200 # default: 125
       volume_size = var.ec2_meta_sharp_root_volume_size
