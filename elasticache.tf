@@ -20,6 +20,7 @@ module "elasticache" {
   # Security Group
   vpc_id = module.vpc.vpc_id
   security_group_name = "scg-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
+  security_group_use_name_prefix = false 
   security_group_description = "elasticache for data"
   security_group_tags = merge(
     local.tags,

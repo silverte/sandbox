@@ -6,6 +6,7 @@ module "rds-maria-as" {
   source = "terraform-aws-modules/rds/aws"
   create_db_instance = var.create
   create_db_parameter_group = var.create
+  create_db_option_group = false
 
   identifier = "rds-${var.service}-${var.environment}-${var.rds_mariadb_as_name}"
 
@@ -15,9 +16,13 @@ module "rds-maria-as" {
   major_engine_version = var.rds_mariadb_as_major_engine_version # DB option group
   parameter_group_name = "rdspg-${var.service}-${var.environment}-${var.rds_mariadb_as_name}"
   instance_class       = var.rds_mariadb_as_instance_class
-  create_db_option_group = false
+  option_group_name    = "rdsog-${var.service}-${var.environment}-${var.rds_mariadb_as_name}"
+  option_group_use_name_prefix = false
+  option_group_description = "MariaDB option group for ${var.service}-${var.environment}-${var.rds_mariadb_as_name}"
 
   storage_encrypted    = true
+  storage_type         = "gp3"
+  # max_allocated_storage = var.rds_mariadb_as_allocated_storage * 1.1
   kms_key_id           = module.kms-rds.key_arn
   allocated_storage    = var.rds_mariadb_as_allocated_storage
 
@@ -39,10 +44,10 @@ module "rds-maria-as" {
 #   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
 #   create_cloudwatch_log_group     = true
 
-  backup_retention_period = 1
+  backup_retention_period = 14
   skip_final_snapshot     = true
   auto_minor_version_upgrade = false
-  deletion_protection     = false
+  deletion_protection     = true
 
 #   performance_insights_enabled          = true
 #   performance_insights_retention_period = 7

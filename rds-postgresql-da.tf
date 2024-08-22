@@ -7,6 +7,8 @@ module "rds-postgresql-da" {
   source = "terraform-aws-modules/rds/aws"
   create_db_instance = var.create
   create_db_parameter_group = var.create
+  # PostgreSQL은 option group을 사용하지 않음(2024.08.22)
+  create_db_option_group = false
 
   identifier = "rds-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
 
@@ -16,9 +18,11 @@ module "rds-postgresql-da" {
   major_engine_version = "14"         # DB option group
   parameter_group_name = "rdspg-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
   instance_class       = var.rds_postgresql_da_instance_class
-  create_db_option_group = false
 
   storage_encrypted    = true
+  storage_type         = "gp3"
+  # max_allocated_storage = var.rds_postgresql_da_allocated_storage * 1.1
+  
   kms_key_id           = module.kms-rds.key_arn
   allocated_storage    = var.rds_postgresql_da_allocated_storage
 
@@ -40,14 +44,14 @@ module "rds-postgresql-da" {
 #   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
 #   create_cloudwatch_log_group     = true
 
-  backup_retention_period = 1
+  backup_retention_period = 14
   skip_final_snapshot     = true
   auto_minor_version_upgrade = false
-  deletion_protection     = false
+  deletion_protection     = true
 
 #   performance_insights_enabled          = true
 #   performance_insights_retention_period = 7
-#   create_monitoring_role                = true
+#   create_monitoring_role                = var.create
 #   monitoring_interval                   = 60
 #   monitoring_role_name                  = "example-monitoring-role-name"
 #   monitoring_role_use_name_prefix       = true
@@ -119,10 +123,10 @@ module "security_group_rds_postgresql_da" {
   version = "~> 5.0"
   create  = var.create
 
-  name        = "scg-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
-  description = "PostgreSQL example security group"
-  vpc_id      = module.vpc.vpc_id
-
+  name            = "scg-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
+  use_name_prefix = false
+  description     = "PostgreSQL security group"
+  vpc_id          = module.vpc.vpc_id
   # ingress
   ingress_with_cidr_blocks = [
     {

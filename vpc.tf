@@ -41,6 +41,7 @@ module "vpc" {
   create_database_subnet_group       = var.create_database_subnet_group
   create_database_subnet_route_table = var.create_database_subnet_route_table
   database_subnet_group_name = "rdssg-${var.service}-${var.environment}"
+  database_subnet_group_tags = {"Name" = "rdssg-${var.service}-${var.environment}"}
 
   # DNS Parameters in VPC
   enable_dns_hostnames = true

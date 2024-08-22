@@ -7,6 +7,7 @@ module "rds-oracle-to" {
   source = "terraform-aws-modules/rds/aws"
   create_db_instance = var.create
   create_db_parameter_group = var.create
+  create_db_option_group = var.create
 
   identifier = "rds-${var.service}-${var.environment}-${var.rds_oracle_to_name}"
 
@@ -17,9 +18,13 @@ module "rds-oracle-to" {
   parameter_group_name = "rdspg-${var.service}-${var.environment}-${var.rds_oracle_to_name}"
   instance_class       = var.rds_oracle_to_instance_class
   license_model        = "bring-your-own-license"
-  create_db_option_group = false
+  option_group_name    = "rdsopt-${var.service}-${var.environment}-${var.rds_oracle_to_name}"
+  option_group_use_name_prefix = false
+  option_group_description = "Terraform Option Group for ${var.service}-${var.environment}-${var.rds_oracle_to_name}"
 
   storage_encrypted    = true
+  storage_type         = "gp3"
+  # max_allocated_storage = var.rds_oracle_to_allocated_storage * 1.1
   kms_key_id           = module.kms-rds.key_arn
   allocated_storage    = var.rds_oracle_to_allocated_storage
 
@@ -39,10 +44,10 @@ module "rds-oracle-to" {
   # enabled_cloudwatch_logs_exports = ["alert", "audit"]
   # create_cloudwatch_log_group     = true
 
-  backup_retention_period = 1
+  backup_retention_period = 14
   skip_final_snapshot     = true
   auto_minor_version_upgrade = false
-  deletion_protection     = false
+  deletion_protection     = true
 
   # performance_insights_enabled          = true
   # performance_insights_retention_period = 7
@@ -102,9 +107,10 @@ module "security_group_oracle_to" {
   version = "~> 5.0"
   create  = var.create
 
-  name        = "scg-${var.service}-${var.environment}-${var.rds_oracle_to_name}"
-  description = "Oracle security group"
-  vpc_id      = module.vpc.vpc_id
+  name            = "scg-${var.service}-${var.environment}-${var.rds_oracle_to_name}"
+  use_name_prefix = false
+  description     = "Oracle security group"
+  vpc_id          = module.vpc.vpc_id
 
   # ingress
   ingress_with_cidr_blocks = [

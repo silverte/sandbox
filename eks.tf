@@ -8,14 +8,25 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.11"
   create = true
+  # TO-DO 클러스터 Secret 암호화 적용 확인
+  create_kms_key = false
+  enable_kms_key_rotation = false
+  kms_key_enable_default_policy = false
+  cluster_encryption_config = {}
 
   cluster_name    = "eks-${var.service}-${var.environment}"
   cluster_version = var.cluster_version
+  attach_cluster_encryption_policy = false
 
   # Gives Terraform identity admin access to cluster which will
   # allow deploying resources (Karpenter) into the cluster
   enable_cluster_creator_admin_permissions = var.enable_cluster_creator_admin_permissions
   cluster_endpoint_public_access           = var.cluster_endpoint_public_access
+  cluster_endpoint_public_access_cidrs     = ["0.0.0.0/0"] 
+  cluster_security_group_name              = "scg-${var.service}-${var.environment}-cluster"
+  cluster_security_group_description       = "EKS cluster security group"
+  cluster_security_group_use_name_prefix   = false
+  cluster_security_group_tags              = {"Name"="scg-${var.service}-${var.environment}-cluster"}
 
   cluster_addons = {
     coredns                      = {
@@ -60,10 +71,20 @@ module "eks" {
   subnet_ids               = module.vpc.private_subnets
   control_plane_subnet_ids = module.vpc.intra_subnets
 
+  node_security_group_name = "scg-${var.service}-${var.environment}-node"
+  node_security_group_description = "EKS node security group"
+  node_security_group_use_name_prefix = false
+  node_security_group_tags = {
+    # NOTE - if creating multiple security groups with this module, only tag the
+    # security group that Karpenter should utilize with the following tag
+    # (i.e. - at most, only one security group should have this tag in your account)
+    "karpenter.sh/discovery" = "eks-${var.service}-${var.environment}",
+    "Name"                   = "scg-${var.service}-${var.environment}-node"
+  }
   eks_managed_node_groups = {
     management = {
       # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
-      ami_type       = "AL2023_arm64_STANDARD"
+      ami_type       = "AL2023_ARM_64_STANDARD"
       instance_types = ["t4g.medium"]
 
       min_size     = 1
@@ -120,14 +141,12 @@ module "eks" {
   #   }
   # }
 
-  node_security_group_tags = merge(local.tags, {
-    # NOTE - if creating multiple security groups with this module, only tag the
-    # security group that Karpenter should utilize with the following tag
-    # (i.e. - at most, only one security group should have this tag in your account)
-    "karpenter.sh/discovery" = "eks-${var.service}-${var.environment}"
-  })
-
-  tags = local.tags
+  tags = merge(
+    local.tags,
+    {
+      "Name" = "eks-${var.service}-${var.environment}"
+    }
+  )
 }
 
 output "configure_kubectl" {
