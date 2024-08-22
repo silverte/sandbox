@@ -7,7 +7,6 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.11"
-  create = true
   # TO-DO 클러스터 Secret 암호화 적용 확인
   create_kms_key = false
   enable_kms_key_rotation = false
@@ -86,6 +85,9 @@ module "eks" {
       # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
       ami_type       = "AL2023_ARM_64_STANDARD"
       instance_types = ["t4g.medium"]
+      aliases_use_name_prefix = false
+      node = "management"
+      use_name_prefix = false
 
       min_size     = 1
       max_size     = 2
@@ -155,206 +157,69 @@ output "configure_kubectl" {
 }
 
 ################################################################################
-# EKS Blueprints Addons
+# Karpenter
 ################################################################################
+module "karpenter" {
+  source  = "terraform-aws-modules/eks/aws//modules/karpenter"
+  version = "20.19.0"
 
-module "eks_blueprints_addons" {
-  source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.16"
+  cluster_name = module.eks.cluster_name
 
-  cluster_name      = module.eks.cluster_name
-  cluster_endpoint  = module.eks.cluster_endpoint
-  cluster_version   = module.eks.cluster_version
-  oidc_provider_arn = module.eks.oidc_provider_arn
+  enable_pod_identity             = true
+  create_pod_identity_association = true
 
-  enable_metrics_server = true
-  metrics_server = {
-    values = [
-      yamlencode({
-        "tolerations" = [
-          {
-            "key"      = "CriticalAddonsOnly"
-            "operator" = "Exists"
-            "effect"   = "NoSchedule"
-          }
-        ]
-      })
-    ]
+  # Used to attach additional IAM policies to the Karpenter node IAM role
+  node_iam_role_additional_policies = {
+    AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   }
-
-  # This is required to expose Istio Ingress Gateway
-  enable_aws_load_balancer_controller = true
-  aws_load_balancer_controller = {
-    values = [
-      yamlencode({
-        "tolerations" = [
-          {
-            "key"      = "CriticalAddonsOnly"
-            "operator" = "Exists"
-            "effect"   = "NoSchedule"
-          }
-        ]
-      })
-    ]
-  }
-
-  # AWS Addons
-  enable_karpenter                             = true
-  karpenter =  {
-    values = [
-      yamlencode({
-        "tolerations" = [
-          {
-            "key"      = "CriticalAddonsOnly"
-            "operator" = "Exists"
-            "effect"   = "NoSchedule"
-          }
-        ]
-      })
-    ]
-  }
-  enable_cert_manager                          = false
-  enable_aws_cloudwatch_metrics                = false
-  enable_aws_privateca_issuer                  = false
-  enable_cluster_autoscaler                    = false
-  enable_external_dns                          = false
-  enable_external_secrets                      = false
-  enable_fargate_fluentbit                     = false
-  enable_aws_for_fluentbit                     = false
-  enable_aws_node_termination_handler          = false
-  enable_velero                                = false
-  enable_aws_gateway_api_controller            = false
-
-  # OSS Addons
-  enable_argocd                                = false
-  enable_argo_rollouts                         = false
-  enable_argo_events                           = false
-  enable_argo_workflows                        = false
-  enable_cluster_proportional_autoscaler       = false
-  enable_gatekeeper                            = false
-  #enable_gpu_operator                          = false
-  enable_ingress_nginx                         = false
-  #enable_kyverno                               = false
-  enable_kube_prometheus_stack                 = false
-  #enable_prometheus_adapter                    = false
-  enable_secrets_store_csi_driver              = false
-  enable_vpa                                   = false
 
   tags = local.tags
 }
 
-# ################################################################################
-# # Karpenter
-# ################################################################################
-# module "karpenter" {
-#   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-#   version = "20.19.0"
+################################################################################
+# Karpenter Helm chart & manifests
+# Not required; just to demonstrate functionality of the sub-module
+################################################################################
+resource "helm_release" "karpenter" {
+  namespace           = "kube-system"
+  name                = "karpenter"
+  repository          = "oci://public.ecr.aws/karpenter"
+  repository_username = data.aws_ecrpublic_authorization_token.token.user_name
+  repository_password = data.aws_ecrpublic_authorization_token.token.password
+  chart               = "karpenter"
+  version             = "1.0.0"
+  wait                = false
 
-#   cluster_name = module.eks.cluster_name
+  values = [
+    <<-EOT
+    serviceAccount:
+      name: ${module.karpenter.service_account}
+    settings:
+      clusterName: ${module.eks.cluster_name}
+      clusterEndpoint: ${module.eks.cluster_endpoint}
+      interruptionQueue: ${module.karpenter.queue_name}
+    EOT
+  ]
+}
 
-#   enable_pod_identity             = true
-#   create_pod_identity_association = true
+################################################################################
+# Metrics Server
+################################################################################
+resource "helm_release" "metrics_server" {
+  name       = "metrics-server"
+  repository = "https://kubernetes-sigs.github.io/metrics-server/"
+  chart      = "metrics-server"
+  namespace  = "kube-system"
 
-#   # Used to attach additional IAM policies to the Karpenter node IAM role
-#   node_iam_role_additional_policies = {
-#     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-#   }
+  # values = [
+  #   <<EOF
+  #   args:
+  #     - --kubelet-insecure-tls
+  #   EOF
+  # ]
 
-#   tags = local.tags
-# }
-
-# module "karpenter_disabled" {
-#   source = "terraform-aws-modules/eks/aws//modules/karpenter"
-
-#   create = false
-# }
-
-# ################################################################################
-# # Karpenter Helm chart & manifests
-# # Not required; just to demonstrate functionality of the sub-module
-# ################################################################################
-
-# resource "helm_release" "karpenter" {
-#   namespace           = "kube-system"
-#   name                = "karpenter"
-#   repository          = "oci://public.ecr.aws/karpenter"
-#   repository_username = data.aws_ecrpublic_authorization_token.token.user_name
-#   repository_password = data.aws_ecrpublic_authorization_token.token.password
-#   chart               = "karpenter"
-#   version             = "0.37.0"
-#   wait                = false
-
-#   values = [
-#     <<-EOT
-#     serviceAccount:
-#       name: ${module.karpenter.service_account}
-#     settings:
-#       clusterName: ${module.eks.cluster_name}
-#       clusterEndpoint: ${module.eks.cluster_endpoint}
-#       interruptionQueue: ${module.karpenter.queue_name}
-#     EOT
-#   ]
-# }
-
-# resource "kubectl_manifest" "karpenter_node_class" {
-#   yaml_body = <<-YAML
-#     apiVersion: karpenter.k8s.aws/v1beta1
-#     kind: EC2NodeClass
-#     metadata:
-#       name: default
-#     spec:
-#       amiFamily: AL2023
-#       role: ${module.karpenter.node_iam_role_name}
-#       subnetSelectorTerms:
-#         - tags:
-#             karpenter.sh/discovery: ${module.eks.cluster_name}
-#       securityGroupSelectorTerms:
-#         - tags:
-#             karpenter.sh/discovery: ${module.eks.cluster_name}
-#       tags:
-#         karpenter.sh/discovery: ${module.eks.cluster_name}
-#   YAML
-
-#   depends_on = [
-#     helm_release.karpenter
-#   ]
-# }
-
-# resource "kubectl_manifest" "karpenter_node_pool" {
-#   yaml_body = <<-YAML
-#     apiVersion: karpenter.sh/v1beta1
-#     kind: NodePool
-#     metadata:
-#       name: default
-#     spec:
-#       template:
-#         spec:
-#           nodeClassRef:
-#             name: default
-#           requirements:
-#             - key: "karpenter.sh/capacity-type" 
-#               operator: In
-#               values: ["spot"]
-#             - key: "karpenter.k8s.aws/instance-category"
-#               operator: In
-#               values: ["c", "m", "r"]
-#             - key: "karpenter.k8s.aws/instance-cpu"
-#               operator: In
-#               values: ["4", "8", "16", "32"]
-#             - key: "karpenter.k8s.aws/instance-hypervisor"
-#               operator: In
-#               values: ["nitro"]
-#             - key: "karpenter.k8s.aws/instance-generation"
-#               operator: Gt
-#               values: ["2"]
-#       limits:
-#         cpu: 1000
-#       disruption:
-#         consolidationPolicy: WhenEmpty
-#         consolidateAfter: 30s
-#   YAML
-
-#   depends_on = [
-#     kubectl_manifest.karpenter_node_class
-#   ]
-# }
+  set {
+    name  = "replicas"
+    value = "2"
+  }
+}

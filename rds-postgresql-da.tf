@@ -14,8 +14,8 @@ module "rds-postgresql-da" {
 
   engine               = var.rds_postgresql_da_engine
   engine_version       = var.rds_postgresql_da_engine_version
-  family               = "postgres14" # DB parameter group
-  major_engine_version = "14"         # DB option group
+  # family               = "postgres14" # DB parameter group
+  # major_engine_version = "14"         # DB option group
   parameter_group_name = "rdspg-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
   instance_class       = var.rds_postgresql_da_instance_class
 
