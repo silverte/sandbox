@@ -5,7 +5,7 @@
 
 module "ec2_bastion" {
   source = "terraform-aws-modules/ec2-instance/aws"
-  create = var.create
+  create = true
 
   name = "ec2-${var.service}-${var.environment}-bastion"
 
@@ -25,7 +25,7 @@ module "ec2_bastion" {
   }
 
   # https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/hibernating-prerequisites.html#hibernation-prereqs-supported-amis
-  hibernation = false
+  hibernation                 = false
   user_data_base64            = base64encode(file("./user_data.sh"))
   user_data_replace_on_change = true
 
@@ -35,14 +35,14 @@ module "ec2_bastion" {
     http_put_response_hop_limit = 8
     instance_metadata_tags      = "enabled"
   }
-  
+
   enable_volume_tags = false
   root_block_device = [
     {
       encrypted   = true
       kms_key_id  = module.kms-ebs.key_arn
       volume_type = "gp3"
-    #   throughput  = 200 # default: 125
+      #   throughput  = 200 # default: 125
       volume_size = var.ec2_bastion_root_volume_size
       tags = {
         Name = "ec2-bastion-root-block"
@@ -55,11 +55,11 @@ module "ec2_bastion" {
       device_name = "/dev/sdf"
       volume_type = "gp3"
       volume_size = var.ec2_bastion_ebs_volume_size
-    #   throughput  = 200 # default: 125
-      encrypted   = true
-      kms_key_id  = module.kms-ebs.key_arn
+      #   throughput  = 200 # default: 125
+      encrypted  = true
+      kms_key_id = module.kms-ebs.key_arn
       tags = {
-        Name = "ec2-bastion-data-block"
+        Name       = "ec2-bastion-data-block"
         MountPoint = "/mnt/data"
       }
     }
@@ -76,6 +76,7 @@ module "ec2_bastion" {
 module "security_group_ec2_bastion" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
+  create  = true
 
   name        = "scg-${var.service}-${var.environment}-bastion"
   description = "Security group for EC2 Bastion"
@@ -115,4 +116,10 @@ module "key_pair_bastion" {
       "Name" = "key-${var.service}-${var.environment}-bastion"
     },
   )
+}
+
+output "private_key_pem" {
+  description = "Private key data in PEM (RFC 1421) format"
+  value       = try(trimspace(module.key_pair_bastion.this[0].private_key_pem), "")
+  sensitive   = true
 }

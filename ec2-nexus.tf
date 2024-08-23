@@ -76,6 +76,7 @@ module "ec2_nexus" {
 module "security_group_ec2_nexus" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
+  create  = var.create
 
   name        = "scg-${var.service}-${var.environment}-nexus"
   description = "Security group for EC2 Nexus"

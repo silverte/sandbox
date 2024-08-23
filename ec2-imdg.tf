@@ -76,6 +76,7 @@ module "ec2_imdg" {
 module "security_group_ec2_imdg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
+  create  = var.create
 
   name        = "scg-${var.service}-${var.environment}-imdg"
   description = "Security group for EC2 Nexus"

@@ -1,5 +1,14 @@
 terraform {
-  required_version = "~> 1.3"
+  # Set minimum required versions for providers using lazy matching
+  required_version = "~> 1.3.0"
+
+  # Configure the S3 backend
+  backend "s3" {
+    bucket = "s3-ezwel-terraform-state"
+    key    = "sandbox/terraform.tfstate"
+    region = "us-west-2"
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"

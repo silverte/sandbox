@@ -76,6 +76,7 @@ module "ec2_meta_sharp" {
 module "security_group_ec2_meta_sharp" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
+  create  = var.create
 
   name        = "scg-${var.service}-${var.environment}-meta-sharp"
   description = "Security group for EC2 Nexus"
