@@ -1,6 +1,6 @@
 terraform {
   # Set minimum required versions for providers using lazy matching
-  required_version = "~> 1.3.0"
+  required_version = "~> 1.8.2"
 
   # Configure the S3 backend
   backend "s3" {

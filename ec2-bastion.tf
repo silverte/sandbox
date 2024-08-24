@@ -5,7 +5,7 @@
 
 module "ec2_bastion" {
   source = "terraform-aws-modules/ec2-instance/aws"
-  create = true
+  create = var.enable_ec2_bastion
 
   name = "ec2-${var.service}-${var.environment}-bastion"
 
@@ -76,7 +76,7 @@ module "ec2_bastion" {
 module "security_group_ec2_bastion" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
-  create  = true
+  create  = var.enable_ec2_bastion
 
   name        = "scg-${var.service}-${var.environment}-bastion"
   description = "Security group for EC2 Bastion"
@@ -106,6 +106,7 @@ data "aws_ami" "ec2_bastion" {
 
 module "key_pair_bastion" {
   source = "terraform-aws-modules/key-pair/aws"
+  create = var.enable_ec2_bastion
 
   key_name           = "key-${var.service}-${var.environment}-bastion"
   create_private_key = true
@@ -118,8 +119,15 @@ module "key_pair_bastion" {
   )
 }
 
-output "private_key_pem" {
-  description = "Private key data in PEM (RFC 1421) format"
-  value       = try(trimspace(module.key_pair_bastion.this[0].private_key_pem), "")
-  sensitive   = true
+# output "private_key_pem" {
+#   description = "Private key data in PEM (RFC 1421) format"
+#   value       = try(trimspace(module.key_pair_bastion.this[0].private_key_pem), "")
+#   sensitive   = true
+# }
+
+resource "local_file" "save_private_key" {
+  count    = var.enable_ec2_bastion ? 1 : 0
+  content  = try(trimspace(module.key_pair_bastion.private_key_pem), "")
+  filename = "${path.module}/key-${var.service}-${var.environment}-bastion.pem"
+  file_permission = "0400" # 파일 권한 설정 (옵션)
 }

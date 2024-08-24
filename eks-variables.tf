@@ -18,3 +18,10 @@ variable "enable_cluster_creator_admin_permissions" {
   type        = bool
   default     = true
 }
+
+# Whether to create an EKS cluster (True or False)
+variable "enable_cluster" {
+  description = "Whether to create an EKS cluster"
+  type        = bool
+  default     = true
+}
