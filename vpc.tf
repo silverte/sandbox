@@ -1,7 +1,7 @@
 # Create VPC using Terraform Module
 module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "5.8.1"
+  source     = "terraform-aws-modules/vpc/aws"
+  version    = "5.8.1"
   create_vpc = true
 
   # Details
@@ -12,36 +12,36 @@ module "vpc" {
   private_subnets = var.private_subnets
   intra_subnets   = var.infra_subnets
 
-  manage_default_route_table = false
-  manage_default_network_acl = false
+  manage_default_route_table    = false
+  manage_default_network_acl    = false
   manage_default_security_group = false
-  manage_default_vpc = false
+  manage_default_vpc            = false
 
   # Tag subnets
-  public_subnet_names = ["sub-${var.service}-${var.environment}-pub-a", "sub-${var.service}-${var.environment}-pub-c"]
-  private_subnet_names = ["sub-${var.service}-${var.environment}-pri-a", "sub-${var.service}-${var.environment}-pri-c"]
+  public_subnet_names   = ["sub-${var.service}-${var.environment}-pub-a", "sub-${var.service}-${var.environment}-pub-c"]
+  private_subnet_names  = ["sub-${var.service}-${var.environment}-pri-a", "sub-${var.service}-${var.environment}-pri-c"]
   database_subnet_names = ["sub-${var.service}-${var.environment}-db-a", "sub-${var.service}-${var.environment}-db-c"]
-  intra_subnet_names = ["sub-${var.service}-${var.environment}-ep-a", "sub-${var.service}-${var.environment}-ep-c"]
-  
+  intra_subnet_names    = ["sub-${var.service}-${var.environment}-ep-a", "sub-${var.service}-${var.environment}-ep-c"]
+
   # Tag route table
-  public_route_table_tags = {"Name": "route-${var.service}-${var.environment}-pub"}
-  private_route_table_tags = {"Name":"route-${var.service}-${var.environment}-pri"}
-  database_route_table_tags = {"Name":"route-${var.service}-${var.environment}-db"}
-  intra_route_table_tags = {"Name":"route-${var.service}-${var.environment}-ep"}
-  
-  igw_tags = {"Name": "igw-${var.service}-${var.environment}"}
+  public_route_table_tags   = { "Name" : "route-${var.service}-${var.environment}-pub" }
+  private_route_table_tags  = { "Name" : "route-${var.service}-${var.environment}-pri" }
+  database_route_table_tags = { "Name" : "route-${var.service}-${var.environment}-db" }
+  intra_route_table_tags    = { "Name" : "route-${var.service}-${var.environment}-ep" }
+
+  igw_tags = { "Name" : "igw-${var.service}-${var.environment}" }
 
   # NAT Gateways - Outbound Communication
   enable_nat_gateway = var.enable_nat_gateway
   single_nat_gateway = var.single_nat_gateway
-  nat_gateway_tags = {"Name": "nat-${var.service}-${var.environment}"}
-  nat_eip_tags = {"Name": "eip-${var.service}-${var.environment}"}
+  nat_gateway_tags   = { "Name" : "nat-${var.service}-${var.environment}" }
+  nat_eip_tags       = { "Name" : "eip-${var.service}-${var.environment}" }
 
   database_subnets                   = var.database_subnets
   create_database_subnet_group       = var.create_database_subnet_group
   create_database_subnet_route_table = var.create_database_subnet_route_table
-  database_subnet_group_name = "rdssg-${var.service}-${var.environment}"
-  database_subnet_group_tags = {"Name" = "rdssg-${var.service}-${var.environment}"}
+  database_subnet_group_name         = "rdssg-${var.service}-${var.environment}"
+  database_subnet_group_tags         = { "Name" = "rdssg-${var.service}-${var.environment}" }
 
   # DNS Parameters in VPC
   enable_dns_hostnames = true

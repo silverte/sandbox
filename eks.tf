@@ -7,7 +7,7 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.11"
-  create = var.enable_cluster
+  create  = var.enable_cluster
 
   # TO-DO 클러스터 Secret 암호화 적용 확인
   create_kms_key                = false
@@ -102,7 +102,6 @@ module "eks" {
         # The pods that do not tolerate this taint should run on nodes created by Karpenter
         addons = {
           key    = "CriticalAddonsOnly"
-          value  = "Exists"
           effect = "NO_SCHEDULE"
         },
       }
@@ -232,7 +231,7 @@ module "eks" {
 # AWS Load Balancer Controller IRSA
 ################################################################################
 module "aws_load_balancer_controller_role" {
-  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  source      = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   create_role = var.enable_cluster
 
   role_name                              = "role-aws-load-balancer-controller"
@@ -286,7 +285,7 @@ module "aws_load_balancer_controller_role" {
 #   name        = "alb-controller-policy"
 #   path        = "/"
 #   description = "Policy for the AWS Load Balancer Controller"
-  
+
 #   policy = data.aws_iam_policy_document.alb_controller_policy.json
 # }
 
