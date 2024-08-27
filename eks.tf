@@ -70,8 +70,10 @@ module "eks" {
     }
   }
 
-  vpc_id                   = module.vpc.vpc_id
-  subnet_ids               = module.vpc.private_subnets
+  vpc_id = module.vpc.vpc_id
+  # subnet_ids               = module.vpc.private_subnets
+  # Sandbox, Dev, Staging Only!!
+  subnet_ids               = [element(module.vpc.private_subnets, 0)]
   control_plane_subnet_ids = module.vpc.intra_subnets
 
   node_security_group_name            = "scg-${var.service}-${var.environment}-node"
@@ -105,6 +107,17 @@ module "eks" {
           effect = "NO_SCHEDULE"
         },
       }
+    },
+    app = {
+      # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
+      ami_type        = "AL2023_ARM_64_STANDARD"
+      instance_types  = ["t4g.medium"]
+      name            = "eksng-${var.environment}-app"
+      use_name_prefix = false
+
+      min_size     = 1
+      max_size     = 2
+      desired_size = 1
     }
   }
 
@@ -227,29 +240,29 @@ module "eks" {
 #   }
 # }
 
-################################################################################
-# AWS Load Balancer Controller IRSA
-################################################################################
-module "aws_load_balancer_controller_role" {
-  source      = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  create_role = var.enable_cluster
+# ################################################################################
+# # AWS Load Balancer Controller IRSA
+# ################################################################################
+# module "aws_load_balancer_controller_role" {
+#   source      = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+#   create_role = var.enable_cluster
 
-  role_name                              = "role-aws-load-balancer-controller"
-  attach_load_balancer_controller_policy = true
+#   role_name                              = "role-aws-load-balancer-controller"
+#   attach_load_balancer_controller_policy = true
 
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:aws-load-balancer-controller"]
-    }
-  }
-  tags = merge(
-    local.tags,
-    {
-      "Name" = "role-aws-load-balancer-controller"
-    }
-  )
-}
+#   oidc_providers = {
+#     main = {
+#       provider_arn               = module.eks.oidc_provider_arn
+#       namespace_service_accounts = ["kube-system:aws-load-balancer-controller"]
+#     }
+#   }
+#   tags = merge(
+#     local.tags,
+#     {
+#       "Name" = "role-aws-load-balancer-controller"
+#     }
+#   )
+# }
 
 # resource "kubernetes_service_account" "service-account" {
 #   metadata {

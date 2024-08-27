@@ -123,9 +123,10 @@ module "security_group_rds_maria_as" {
   version = "~> 5.0"
   create  = var.enable_mariadb_as
 
-  name        = "scg-${var.service}-${var.environment}-${var.rds_mariadb_as_name}"
-  description = "PostgreSQL example security group"
-  vpc_id      = module.vpc.vpc_id
+  name            = "scg-${var.service}-${var.environment}-${var.rds_mariadb_as_name}"
+  use_name_prefix = false
+  description     = "PostgreSQL example security group"
+  vpc_id          = module.vpc.vpc_id
 
   # ingress
   ingress_with_cidr_blocks = [

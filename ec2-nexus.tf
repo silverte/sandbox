@@ -78,9 +78,10 @@ module "security_group_ec2_nexus" {
   version = "~> 4.0"
   create  = var.enable_ec2_nexus
 
-  name        = "scg-${var.service}-${var.environment}-nexus"
-  description = "Security group for EC2 Nexus"
-  vpc_id      = module.vpc.vpc_id
+  name            = "scg-${var.service}-${var.environment}-nexus"
+  use_name_prefix = false
+  description     = "Security group for EC2 Nexus"
+  vpc_id          = module.vpc.vpc_id
 
   ingress_cidr_blocks = ["0.0.0.0/0"]
   ingress_rules       = ["http-80-tcp", "all-icmp"]

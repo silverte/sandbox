@@ -75,9 +75,9 @@ spec:
         - key: 'karpenter.k8s.aws/instance-generation'
           operator: Gt
           values: ['2']
-        # - key: 'topology.kubernetes.io/zone'
-        #   operator: In
-        #   values: ['us-west-2a', 'us-west-2b']
+        - key: 'topology.kubernetes.io/zone'
+          operator: In
+          values: ['us-west-2a']
         - key: 'kubernetes.io/arch'
           operator: In
           values: ['arm64', 'amd64']
