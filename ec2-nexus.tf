@@ -5,7 +5,7 @@
 
 module "ec2_nexus" {
   source = "terraform-aws-modules/ec2-instance/aws"
-  create = var.create
+  create = var.enable_ec2_nexus
 
   name = "ec2-${var.service}-${var.environment}-nexus"
 
@@ -25,7 +25,7 @@ module "ec2_nexus" {
   # }
 
   # https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/hibernating-prerequisites.html#hibernation-prereqs-supported-amis
-  hibernation = false
+  hibernation                 = false
   user_data_base64            = base64encode(file("./user_data.sh"))
   user_data_replace_on_change = true
 
@@ -35,14 +35,14 @@ module "ec2_nexus" {
     http_put_response_hop_limit = 8
     instance_metadata_tags      = "enabled"
   }
-  
+
   enable_volume_tags = false
   root_block_device = [
     {
       encrypted   = true
       kms_key_id  = module.kms-ebs.key_arn
       volume_type = "gp3"
-    #   throughput  = 200 # default: 125
+      #   throughput  = 200 # default: 125
       volume_size = var.ec2_nexus_root_volume_size
       tags = {
         Name = "ec2-nexus-root-block"
@@ -55,11 +55,11 @@ module "ec2_nexus" {
       device_name = "/dev/sdf"
       volume_type = "gp3"
       volume_size = var.ec2_nexus_ebs_volume_size
-    #   throughput  = 200 # default: 125
-      encrypted   = true
-      kms_key_id  = module.kms-ebs.key_arn
+      #   throughput  = 200 # default: 125
+      encrypted  = true
+      kms_key_id = module.kms-ebs.key_arn
       tags = {
-        Name = "ec2-nexus-data-block"
+        Name       = "ec2-nexus-data-block"
         MountPoint = "/mnt/data"
       }
     }
@@ -76,7 +76,7 @@ module "ec2_nexus" {
 module "security_group_ec2_nexus" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
-  create  = var.create
+  create  = var.enable_ec2_nexus
 
   name        = "scg-${var.service}-${var.environment}-nexus"
   description = "Security group for EC2 Nexus"

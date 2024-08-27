@@ -4,29 +4,29 @@
 ################################################################################
 
 module "rds-oracle-to" {
-  source = "terraform-aws-modules/rds/aws"
-  create_db_instance = var.create
-  create_db_parameter_group = var.create
-  create_db_option_group = var.create
+  source                    = "terraform-aws-modules/rds/aws"
+  create_db_instance        = var.enable_oracle_to
+  create_db_parameter_group = var.enable_oracle_to
+  create_db_option_group    = var.enable_oracle_to
 
   identifier = "rds-${var.service}-${var.environment}-${var.rds_oracle_to_name}"
 
-  engine               = var.rds_oracle_to_engine
-  engine_version       = var.rds_oracle_to_engine_version
-  family               = var.rds_oracle_to_family               # DB parameter group
-  major_engine_version = var.rds_oracle_to_major_engine_version # DB option group
-  parameter_group_name = "rdspg-${var.service}-${var.environment}-${var.rds_oracle_to_name}"
-  instance_class       = var.rds_oracle_to_instance_class
-  license_model        = "bring-your-own-license"
-  option_group_name    = "rdsopt-${var.service}-${var.environment}-${var.rds_oracle_to_name}"
+  engine                       = var.rds_oracle_to_engine
+  engine_version               = var.rds_oracle_to_engine_version
+  family                       = var.rds_oracle_to_family               # DB parameter group
+  major_engine_version         = var.rds_oracle_to_major_engine_version # DB option group
+  parameter_group_name         = "rdspg-${var.service}-${var.environment}-${var.rds_oracle_to_name}"
+  instance_class               = var.rds_oracle_to_instance_class
+  license_model                = "bring-your-own-license"
+  option_group_name            = "rdsopt-${var.service}-${var.environment}-${var.rds_oracle_to_name}"
   option_group_use_name_prefix = false
-  option_group_description = "Terraform Option Group for ${var.service}-${var.environment}-${var.rds_oracle_to_name}"
+  option_group_description     = "Terraform Option Group for ${var.service}-${var.environment}-${var.rds_oracle_to_name}"
 
-  storage_encrypted    = true
-  storage_type         = "gp3"
+  storage_encrypted = true
+  storage_type      = "gp3"
   # max_allocated_storage = var.rds_oracle_to_allocated_storage * 1.1
-  kms_key_id           = module.kms-rds.key_arn
-  allocated_storage    = var.rds_oracle_to_allocated_storage
+  kms_key_id        = module.kms-rds.key_arn
+  allocated_storage = var.rds_oracle_to_allocated_storage
 
   # Make sure that database name is capitalized, otherwise RDS will try to recreate RDS instance every time
   # Oracle database name cannot be longer than 8 characters
@@ -44,10 +44,10 @@ module "rds-oracle-to" {
   # enabled_cloudwatch_logs_exports = ["alert", "audit"]
   # create_cloudwatch_log_group     = true
 
-  backup_retention_period = 14
-  skip_final_snapshot     = true
+  backup_retention_period    = 14
+  skip_final_snapshot        = true
   auto_minor_version_upgrade = false
-  deletion_protection     = true
+  deletion_protection        = true
 
   # performance_insights_enabled          = true
   # performance_insights_retention_period = 7
@@ -105,7 +105,7 @@ module "rds-oracle-to" {
 module "security_group_oracle_to" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 5.0"
-  create  = var.create
+  create  = var.enable_oracle_to
 
   name            = "scg-${var.service}-${var.environment}-${var.rds_oracle_to_name}"
   use_name_prefix = false

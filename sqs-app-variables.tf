@@ -4,3 +4,10 @@ variable "sqs_app_name" {
   type        = string
   default     = "app"
 }
+
+# Whether to create an SQS App (True or False)
+variable "enable_sqs_app" {
+  description = "Whether to create an SQS App"
+  type        = bool
+  default     = true
+}

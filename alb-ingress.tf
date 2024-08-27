@@ -1,0 +1,20 @@
+module "security_group_alb_ingress" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "~> 4.0"
+  create  = var.enable_alb_ingress
+
+  name        = "scg-${var.service}-${var.environment}-alb-ingress"
+  description = "Security group for ALB ingress "
+  vpc_id      = module.vpc.vpc_id
+
+  ingress_cidr_blocks = ["0.0.0.0/0"]
+  ingress_rules       = ["http-80-tcp", "all-icmp"]
+  egress_rules        = ["all-all"]
+
+  tags = merge(
+    local.tags,
+    {
+      "Name" = "scg-${var.service}-${var.environment}-alb-ingress"
+    },
+  )
+}

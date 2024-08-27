@@ -24,10 +24,3 @@ variable "owners" {
   type        = string
   default     = "born2k"
 }
-
-# Resource Creation
-variable "create" {
-  description = "Resource Creation"
-  type        = bool
-  default     = true
-}

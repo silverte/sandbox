@@ -4,3 +4,10 @@ variable "efs_app_name" {
   type        = string
   default     = "app"
 }
+
+# Whether to create an EFS App (True or False)
+variable "enable_efs_app" {
+  description = "Whether to create an EFS App"
+  type        = bool
+  default     = true
+}

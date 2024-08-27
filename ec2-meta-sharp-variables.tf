@@ -25,3 +25,10 @@ variable "ec2_meta_sharp_ami_filter_value" {
   type        = string
   default     = "al2023-ami-2023.5.20240805.0-kernel-6.1-arm64"
 }
+
+# Whether to create an EC2 META# (True or False)
+variable "enable_ec2_meta_sharp" {
+  description = "Whether to create an EC2 META#"
+  type        = bool
+  default     = true
+}

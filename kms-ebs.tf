@@ -4,9 +4,9 @@
 ################################################################################
 module "kms-ebs" {
   source = "terraform-aws-modules/kms/aws"
-  create = var.create
+  create = var.enable_kms_ebs
 
-  description = "EBS customer managed key"
+  description             = "EBS customer managed key"
   deletion_window_in_days = 7
   enable_key_rotation     = true
   is_enabled              = true
@@ -14,7 +14,7 @@ module "kms-ebs" {
   multi_region            = false
 
   # Policy
-  enable_default_policy                  = true
+  enable_default_policy = true
   #key_administrators                 = ["arn:aws:iam::012345678901:role/admin"]
 
   # Aliases

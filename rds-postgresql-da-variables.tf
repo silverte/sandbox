@@ -67,3 +67,10 @@ variable "rds_postgresql_da_port" {
   type        = number
   default     = 1521
 }
+
+# Whether to create an PostgreSQL DA (True or False)
+variable "enable_postgresql_da" {
+  description = "Whether to create an PostgreSQL DA"
+  type        = bool
+  default     = true
+}

@@ -2,7 +2,7 @@
 module "vpc" {
   source     = "terraform-aws-modules/vpc/aws"
   version    = "5.8.1"
-  create_vpc = true
+  create_vpc = var.enable_vpc
 
   # Details
   name            = "vpc-${var.service}-${var.environment}"

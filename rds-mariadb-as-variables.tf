@@ -67,3 +67,10 @@ variable "rds_mariadb_as_port" {
   type        = number
   default     = 3306
 }
+
+# Whether to create an MariaDB As-Is (True or False)
+variable "enable_mariadb_as" {
+  description = "Whether to create an MariaDB As-Is"
+  type        = bool
+  default     = true
+}

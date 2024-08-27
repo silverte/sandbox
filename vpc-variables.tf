@@ -68,3 +68,10 @@ variable "single_nat_gateway" {
   type        = bool
   default     = false
 }
+
+# Whether to create an VPC (True or False)
+variable "enable_vpc" {
+  description = "Whether to create an VPC"
+  type        = bool
+  default     = true
+}

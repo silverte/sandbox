@@ -18,3 +18,10 @@ variable "elasticache_cluster_instance_class" {
   type        = string
   default     = "cache.t4g.small"
 }
+
+# Whether to create an ElastiCache Data (True or False)
+variable "enable_elasticache_data" {
+  description = "Whether to create an ElastiCache Data"
+  type        = bool
+  default     = true
+}

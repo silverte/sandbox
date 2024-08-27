@@ -68,3 +68,10 @@ variable "rds_oracle_to_port" {
   type        = number
   default     = 1521
 }
+
+# Whether to create an Oracle To-Be (True or False)
+variable "enable_oracle_to" {
+  description = "Whether to create an Oracle To-Be"
+  type        = bool
+  default     = true
+}

@@ -4,9 +4,9 @@
 ################################################################################
 
 module "rds-postgresql-da" {
-  source = "terraform-aws-modules/rds/aws"
-  create_db_instance = var.create
-  create_db_parameter_group = var.create
+  source                    = "terraform-aws-modules/rds/aws"
+  create_db_instance        = var.enable_postgresql_da
+  create_db_parameter_group = var.enable_postgresql_da
   # PostgreSQL은 option group을 사용하지 않음(2024.08.22)
   create_db_option_group = false
 
@@ -14,17 +14,17 @@ module "rds-postgresql-da" {
 
   engine               = var.rds_postgresql_da_engine
   engine_version       = var.rds_postgresql_da_engine_version
-  family               = var.rds_postgresql_da_family # DB parameter group
+  family               = var.rds_postgresql_da_family               # DB parameter group
   major_engine_version = var.rds_postgresql_da_major_engine_version # DB option group
   parameter_group_name = "rdspg-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
   instance_class       = var.rds_postgresql_da_instance_class
 
-  storage_encrypted    = true
-  storage_type         = "gp3"
+  storage_encrypted = true
+  storage_type      = "gp3"
   # max_allocated_storage = var.rds_postgresql_da_allocated_storage * 1.1
-  
-  kms_key_id           = module.kms-rds.key_arn
-  allocated_storage    = var.rds_postgresql_da_allocated_storage
+
+  kms_key_id        = module.kms-rds.key_arn
+  allocated_storage = var.rds_postgresql_da_allocated_storage
 
   # NOTE: Do NOT use 'user' as the value for 'username' as it throws:
   # "Error creating DB Instance: InvalidParameterValue: MasterUsername
@@ -39,34 +39,34 @@ module "rds-postgresql-da" {
   db_subnet_group_name   = module.vpc.database_subnet_group
   vpc_security_group_ids = [module.security_group_rds_postgresql_da.security_group_id]
 
-#   maintenance_window              = "Mon:00:00-Mon:03:00"
-#   backup_window                   = "03:00-06:00"
-#   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
-#   create_cloudwatch_log_group     = true
+  #   maintenance_window              = "Mon:00:00-Mon:03:00"
+  #   backup_window                   = "03:00-06:00"
+  #   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
+  #   create_cloudwatch_log_group     = true
 
-  backup_retention_period = 14
-  skip_final_snapshot     = true
+  backup_retention_period    = 14
+  skip_final_snapshot        = true
   auto_minor_version_upgrade = false
-  deletion_protection     = true
+  deletion_protection        = true
 
-#   performance_insights_enabled          = true
-#   performance_insights_retention_period = 7
-#   create_monitoring_role                = var.create
-#   monitoring_interval                   = 60
-#   monitoring_role_name                  = "example-monitoring-role-name"
-#   monitoring_role_use_name_prefix       = true
-#   monitoring_role_description           = "Description for monitoring role"
+  #   performance_insights_enabled          = true
+  #   performance_insights_retention_period = 7
+  #   create_monitoring_role                = var.create
+  #   monitoring_interval                   = 60
+  #   monitoring_role_name                  = "example-monitoring-role-name"
+  #   monitoring_role_use_name_prefix       = true
+  #   monitoring_role_description           = "Description for monitoring role"
 
-#   parameters = [
-#     {
-#       name  = "autovacuum"
-#       value = 1
-#     },
-#     {
-#       name  = "client_encoding"
-#       value = "utf8"
-#     }
-#   ]
+  #   parameters = [
+  #     {
+  #       name  = "autovacuum"
+  #       value = 1
+  #     },
+  #     {
+  #       name  = "client_encoding"
+  #       value = "utf8"
+  #     }
+  #   ]
 
   tags = merge(
     local.tags,
@@ -121,7 +121,7 @@ module "rds-postgresql-da" {
 module "security_group_rds_postgresql_da" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 5.0"
-  create  = var.create
+  create  = var.enable_postgresql_da
 
   name            = "scg-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
   use_name_prefix = false

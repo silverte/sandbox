@@ -2,9 +2,9 @@
 # EFS Module
 ################################################################################
 
-module "efs" {
+module "efs-app" {
   source = "terraform-aws-modules/efs/aws"
-  create = true
+  create = var.enable_efs_app
 
   # File system
   name           = "efs-${var.service}-${var.environment}-${var.efs_app_name}"

@@ -3,9 +3,9 @@
 # reference: https://github.com/terraform-aws-modules/terraform-aws-elasticache
 ################################################################################
 
-module "elasticache" {
+module "elasticache-data" {
   source = "terraform-aws-modules/elasticache/aws"
-  create = var.create
+  create = var.enable_elasticache_data
 
   cluster_id               = "ec-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
   create_cluster           = true
@@ -18,10 +18,10 @@ module "elasticache" {
   # apply_immediately  = true
 
   # Security Group
-  vpc_id = module.vpc.vpc_id
-  security_group_name = "scg-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
-  security_group_use_name_prefix = false 
-  security_group_description = "elasticache for data"
+  vpc_id                         = module.vpc.vpc_id
+  security_group_name            = "scg-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
+  security_group_use_name_prefix = false
+  security_group_description     = "elasticache for data"
   security_group_tags = merge(
     local.tags,
     {
@@ -48,7 +48,7 @@ module "elasticache" {
   parameter_group_name        = "ecpg-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
   parameter_group_family      = "redis7"
   parameter_group_description = "elasticache parameter group"
-  parameters = []
+  parameters                  = []
 
   tags = merge(
     local.tags,

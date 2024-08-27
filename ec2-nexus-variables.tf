@@ -25,3 +25,10 @@ variable "ec2_nexus_ami_filter_value" {
   type        = string
   default     = "al2023-ami-2023.5.20240805.0-kernel-6.1-arm64"
 }
+
+# Whether to create an EC2 Nexus (True or False)
+variable "enable_ec2_nexus" {
+  description = "Whether to create an EC2 Nexus"
+  type        = bool
+  default     = true
+}

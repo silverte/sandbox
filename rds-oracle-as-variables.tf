@@ -68,3 +68,10 @@ variable "rds_oracle_as_port" {
   type        = number
   default     = 1521
 }
+
+# Whether to create an Oracle As-Is (True or False)
+variable "enable_oracle_as" {
+  description = "Whether to create an Oracle As-Is"
+  type        = bool
+  default     = true
+}

@@ -3,10 +3,10 @@
 # reference: https://github.com/terraform-aws-modules/terraform-aws-rds-aurora
 ################################################################################
 module "aurora-sb-postgresql" {
-  source = "terraform-aws-modules/rds-aurora/aws"
-  create = var.create
-  create_db_cluster_parameter_group = var.create
-  create_security_group = var.create
+  source                            = "terraform-aws-modules/rds-aurora/aws"
+  create                            = var.enable_aurora_postresql
+  create_db_cluster_parameter_group = var.enable_aurora_postresql
+  create_security_group             = var.enable_aurora_postresql
 
   name            = "rds-${var.service}-${var.environment}-${var.rds_aurora_cluster_name}"
   engine          = var.rds_aurora_cluster_engine
@@ -16,18 +16,18 @@ module "aurora-sb-postgresql" {
   port            = var.rds_aurora_port
   instances = {
     1 = {
-      instance_class          = var.rds_aurora_cluster_instance_class
-      publicly_accessible     = true
+      instance_class      = var.rds_aurora_cluster_instance_class
+      publicly_accessible = true
       # db_parameter_group_name = "default.aurora-postgresql14"
     }
   }
   vpc_id               = module.vpc.vpc_id
   db_subnet_group_name = module.vpc.database_subnet_group_name
-  publicly_accessible = false
+  publicly_accessible  = false
 
-  security_group_name  = "scg-${var.service}-${var.environment}-${var.rds_aurora_cluster_name}"
+  security_group_name            = "scg-${var.service}-${var.environment}-${var.rds_aurora_cluster_name}"
   security_group_use_name_prefix = false
-  security_group_description = "Aurora PostgreSQL Security Group"
+  security_group_description     = "Aurora PostgreSQL Security Group"
   security_group_tags = merge(
     local.tags,
     {
@@ -39,15 +39,15 @@ module "aurora-sb-postgresql" {
       cidr_blocks = module.vpc.private_subnets_cidr_blocks
     }
   }
-  storage_encrypted       = true
-  storage_type            = "gp3"
-  kms_key_id              = module.kms-rds.key_arn
-  apply_immediately       = true
-  skip_final_snapshot     = true
-  auto_minor_version_upgrade = false
-  backup_retention_period = 14
-  deletion_protection     = true
-  db_cluster_parameter_group_name        = "rdspg-${var.service}-${var.environment}-${var.rds_aurora_cluster_name}"
+  storage_encrypted                          = true
+  storage_type                               = "gp3"
+  kms_key_id                                 = module.kms-rds.key_arn
+  apply_immediately                          = true
+  skip_final_snapshot                        = true
+  auto_minor_version_upgrade                 = false
+  backup_retention_period                    = 14
+  deletion_protection                        = true
+  db_cluster_parameter_group_name            = "rdspg-${var.service}-${var.environment}-${var.rds_aurora_cluster_name}"
   db_cluster_parameter_group_use_name_prefix = false
   # db_cluster_parameter_group_family      = "aurora-postgresql14"
   db_cluster_parameter_group_description = "aurora cluster parameter group"
@@ -75,7 +75,7 @@ module "aurora-sb-postgresql" {
   # ]
   # enabled_cloudwatch_logs_exports = ["postgresql"]
   # create_cloudwatch_log_group     = true
-  
+
   tags = merge(
     local.tags,
     {

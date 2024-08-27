@@ -2,9 +2,9 @@
 # SQS Module
 # reference: https://github.com/terraform-aws-modules/terraform-aws-sqs
 ################################################################################
-module "sqs" {
+module "sqs_app" {
   source = "terraform-aws-modules/sqs/aws"
-  create = var.create
+  create = var.enable_sqs_app
 
   name = "sqs-${var.service}-${var.environment}-${var.sqs_app_name}"
 
