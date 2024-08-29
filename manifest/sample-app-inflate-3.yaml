@@ -12,15 +12,20 @@ spec:
       labels:
         app: inflate-3
     spec:
-      # nodeSelector:
-      #   intent: apps
       containers:
         - name: inflate
           image: public.ecr.aws/eks-distro/kubernetes/pause:3.2
           resources:
             requests:
-              cpu: 1
-              memory: 1.5Gi
+              cpu: 8
+              memory: 8Gi
             limits:
-              cpu: 1
-              memory: 1.5Gi
+              cpu: 8
+              memory: 8Gi
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: eks.amazonaws.com/nodegroup
+                    operator: Exists

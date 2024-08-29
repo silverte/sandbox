@@ -91,9 +91,13 @@ module "eks" {
     management = {
       # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
       ami_type        = "AL2023_ARM_64_STANDARD"
-      instance_types  = ["t4g.medium"]
       name            = "eksng-${var.environment}-mgmt"
       use_name_prefix = false
+      instance_types  = ["t4g.medium"]
+      capacity_type   = "ON_DEMAND"
+
+      lanch_template_name = "ekslt-${var.environment}-mgmt"
+      launch_template_use_name_prefix = false
 
       min_size     = 1
       max_size     = 2
@@ -111,13 +115,22 @@ module "eks" {
     app = {
       # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
       ami_type        = "AL2023_ARM_64_STANDARD"
-      instance_types  = ["t4g.medium"]
       name            = "eksng-${var.environment}-app"
       use_name_prefix = false
+      instance_types  = ["t4g.medium"]
+      capacity_type   = "SPOT"
+
+      lanch_template_name = "ekslt-${var.environment}-app"
+      launch_template_use_name_prefix = false
 
       min_size     = 1
       max_size     = 2
       desired_size = 1
+
+      labels = {
+        node_type = "app"
+      }
+
     }
   }
 

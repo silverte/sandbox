@@ -21,6 +21,7 @@ module "ec2_bastion" {
   create_iam_instance_profile = true
   iam_role_description        = "IAM role for EC2 instance"
   iam_role_policies = {
+    AmazonEKSClusterPolicy = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
     # AdministratorAccess = "arn:aws:iam::aws:policy/AdministratorAccess"
   }
 
