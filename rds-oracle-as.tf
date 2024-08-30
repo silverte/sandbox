@@ -11,26 +11,28 @@ module "rds-oracle-as" {
 
   identifier = "rds-${var.service}-${var.environment}-${var.rds_oracle_as_name}"
 
-  engine                       = var.rds_oracle_as_engine
-  engine_version               = var.rds_oracle_as_engine_version
-  family                       = var.rds_oracle_as_family               # DB parameter group
-  major_engine_version         = var.rds_oracle_as_major_engine_version # DB option group
-  parameter_group_name         = "rdspg-${var.service}-${var.environment}-${var.rds_oracle_as_name}"
-  instance_class               = var.rds_oracle_as_instance_class
-  license_model                = "bring-your-own-license"
-  option_group_name            = "rdsopt-${var.service}-${var.environment}-${var.rds_oracle_as_name}"
-  option_group_use_name_prefix = false
-  option_group_description     = "Option group for ${var.service}-${var.environment}-${var.rds_oracle_as_name}"
+  engine                          = var.rds_oracle_as_engine
+  engine_version                  = var.rds_oracle_as_engine_version
+  family                          = var.rds_oracle_as_family               # DB parameter group
+  major_engine_version            = var.rds_oracle_as_major_engine_version # DB option group
+  parameter_group_name            = "rdspg-${var.service}-${var.environment}-${var.rds_oracle_as_name}"
+  parameter_group_use_name_prefix = false
+  parameter_group_description     = "Parameter group for ${var.service}-${var.environment}-${var.rds_oracle_as_name}"
+  instance_class                  = var.rds_oracle_as_instance_class
+  license_model                   = "bring-your-own-license"
+  option_group_name               = "rdsopt-${var.service}-${var.environment}-${var.rds_oracle_as_name}"
+  option_group_use_name_prefix    = false
+  option_group_description        = "Option group for ${var.service}-${var.environment}-${var.rds_oracle_as_name}"
 
   storage_encrypted = true
   storage_type      = "gp3"
   # max_allocated_storage = var.rds_oracle_as_allocated_storage * 1.1
-  kms_key_id        = module.kms-rds.key_arn
+  kms_key_id        = var.enable_kms_rds == true ? module.kms-rds.key_arn : data.aws_kms_key.rds[0].arn
   allocated_storage = var.rds_oracle_as_allocated_storage
 
   # Make sure that database name is capitalized, otherwise RDS will try to recreate RDS instance every time
   # Oracle database name cannot be longer than 8 characters
-  db_name  = "ORACLE"
+  db_name  = var.rds_oracle_as_db_name
   username = var.rds_oracle_as_username
   password = var.rds_oracle_as_password
   port     = var.rds_oracle_as_port

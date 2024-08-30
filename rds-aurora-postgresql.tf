@@ -2,7 +2,7 @@
 # RDS Aurora Module
 # reference: https://github.com/terraform-aws-modules/terraform-aws-rds-aurora
 ################################################################################
-module "aurora-sb-postgresql" {
+module "aurora-postgresql" {
   source                            = "terraform-aws-modules/rds-aurora/aws"
   create                            = var.enable_aurora_postresql
   create_db_cluster_parameter_group = var.enable_aurora_postresql
@@ -11,13 +11,14 @@ module "aurora-sb-postgresql" {
   name            = "rds-${var.service}-${var.environment}-${var.rds_aurora_cluster_name}"
   engine          = var.rds_aurora_cluster_engine
   engine_version  = var.rds_aurora_cluster_engine_version
+  database_name   = var.rds_aurora_cluster_database_name
   master_username = var.rds_aurora_master_username
   master_password = var.rds_aurora_master_password
   port            = var.rds_aurora_port
   instances = {
     1 = {
       instance_class      = var.rds_aurora_cluster_instance_class
-      publicly_accessible = true
+      publicly_accessible = false
       # db_parameter_group_name = "default.aurora-postgresql14"
     }
   }
@@ -31,7 +32,7 @@ module "aurora-sb-postgresql" {
   security_group_tags = merge(
     local.tags,
     {
-      "Name" = "scg-${var.service}-${var.rds_aurora_da_cluster_name}-${var.environment}"
+      "Name" = "scg-${var.service}-${var.rds_aurora_cluster_name}-${var.environment}"
     }
   )
   security_group_rules = {
@@ -41,7 +42,7 @@ module "aurora-sb-postgresql" {
   }
   storage_encrypted                          = true
   storage_type                               = "gp3"
-  kms_key_id                                 = module.kms-rds.key_arn
+  kms_key_id                                 = var.enable_kms_rds == true ? module.kms-rds.key_arn : data.aws_kms_key.rds[0].arn
   apply_immediately                          = true
   skip_final_snapshot                        = true
   auto_minor_version_upgrade                 = false
@@ -49,8 +50,8 @@ module "aurora-sb-postgresql" {
   deletion_protection                        = true
   db_cluster_parameter_group_name            = "rdspg-${var.service}-${var.environment}-${var.rds_aurora_cluster_name}"
   db_cluster_parameter_group_use_name_prefix = false
-  # db_cluster_parameter_group_family      = "aurora-postgresql14"
-  db_cluster_parameter_group_description = "aurora cluster parameter group"
+  db_cluster_parameter_group_family          = var.rds_aurora_cluster_pg_family
+  db_cluster_parameter_group_description     = "aurora cluster parameter group"
   db_cluster_parameter_group_parameters = [
     # {
     #   name         = "log_min_duration_statement"

@@ -7,7 +7,7 @@ module "kms-ebs" {
   create = var.enable_kms_ebs
 
   description             = "EBS customer managed key"
-  deletion_window_in_days = 7
+  deletion_window_in_days = 30
   enable_key_rotation     = true
   is_enabled              = true
   key_usage               = "ENCRYPT_DECRYPT"
@@ -18,7 +18,7 @@ module "kms-ebs" {
   #key_administrators                 = ["arn:aws:iam::012345678901:role/admin"]
 
   # Aliases
-  aliases = ["ezwel/ebs"]
+  aliases = ["ebs"]
 
   tags = merge(
     local.tags,

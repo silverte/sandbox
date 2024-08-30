@@ -1,7 +1,7 @@
 module "security_group_alb_ingress" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 4.0"
-  create  = var.enable_alb_ingress
+  create  = var.enable_alb
 
   name            = "scg-${var.service}-${var.environment}-alb-ingress"
   use_name_prefix = false

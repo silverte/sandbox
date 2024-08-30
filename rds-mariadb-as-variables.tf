@@ -47,6 +47,13 @@ variable "rds_mariadb_as_allocated_storage" {
   default     = 500
 }
 
+# RDS DB Name
+variable "rds_mariadb_as_db_name" {
+  description = "RDS DB Name"
+  type        = string
+  default     = ""
+}
+
 # RDS MariaDB As-Is Username
 variable "rds_mariadb_as_username" {
   description = "RDS MariaDB As-Is Username"

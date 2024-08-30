@@ -40,7 +40,7 @@ module "ec2_imdg" {
   root_block_device = [
     {
       encrypted   = true
-      kms_key_id  = module.kms-ebs.key_arn
+      kms_key_id  = var.enable_kms_ebs == true ? module.kms-ebs.key_arn : data.aws_kms_key.ebs[0].arn
       volume_type = "gp3"
       #   throughput  = 200 # default: 125
       volume_size = var.ec2_imdg_root_volume_size
@@ -57,7 +57,7 @@ module "ec2_imdg" {
       volume_size = var.ec2_imdg_ebs_volume_size
       #   throughput  = 200 # default: 125
       encrypted  = true
-      kms_key_id = module.kms-ebs.key_arn
+      kms_key_id = var.enable_kms_ebs == true ? module.kms-ebs.key_arn : data.aws_kms_key.ebs[0].arn
       tags = {
         Name       = "ec2-imdg-data-block"
         MountPoint = "/mnt/data"

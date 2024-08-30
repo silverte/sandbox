@@ -7,7 +7,7 @@ module "kms-rds" {
   create = var.enable_kms_rds
 
   description             = "RDS customer managed key"
-  deletion_window_in_days = 7
+  deletion_window_in_days = 30
   enable_key_rotation     = true
   is_enabled              = true
   key_usage               = "ENCRYPT_DECRYPT"
@@ -18,7 +18,7 @@ module "kms-rds" {
   # key_administrators    = ["arn:aws:iam::012345678901:role/admin"]
 
   # Aliases
-  aliases = ["ezwel/rds"]
+  aliases = ["rds"]
 
   tags = merge(
     local.tags,

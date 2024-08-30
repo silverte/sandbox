@@ -96,7 +96,7 @@ module "eks" {
       instance_types  = ["t4g.medium"]
       capacity_type   = "ON_DEMAND"
 
-      lanch_template_name = "ekslt-${var.environment}-mgmt"
+      lanch_template_name             = "ekslt-${var.environment}-mgmt"
       launch_template_use_name_prefix = false
 
       min_size     = 1
@@ -117,10 +117,10 @@ module "eks" {
       ami_type        = "AL2023_ARM_64_STANDARD"
       name            = "eksng-${var.environment}-app"
       use_name_prefix = false
-      instance_types  = ["t4g.medium"]
+      instance_types  = ["c7g.2xlarge"]
       capacity_type   = "SPOT"
 
-      lanch_template_name = "ekslt-${var.environment}-app"
+      lanch_template_name             = "ekslt-${var.environment}-app"
       launch_template_use_name_prefix = false
 
       min_size     = 1

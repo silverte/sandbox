@@ -48,6 +48,13 @@ variable "rds_oracle_as_allocated_storage" {
   default     = 500
 }
 
+# RDS Name
+variable "rds_oracle_as_db_name" {
+  description = "RDS Database Name"
+  type        = string
+  default     = "oracleas"
+}
+
 # RDS Oracle As-Is Username
 variable "rds_oracle_as_username" {
   description = "RDS Oracle As-Is Username"

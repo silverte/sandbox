@@ -39,3 +39,12 @@ data "aws_availability_zones" "available" {}
 data "aws_ecrpublic_authorization_token" "token" {
   provider = aws.virginia
 }
+# management에서 생성된 KMS 키의 ID 또는 Alias를 사용하여 Data Source를 정의
+data "aws_kms_key" "rds" {
+  count  = var.enable_kms_rds == true ? 0 : 1
+  key_id = "alias/rds"
+}
+data "aws_kms_key" "ebs" {
+  count  = var.enable_kms_ebs == true ? 0 : 1
+  key_id = "alias/ebs"
+}

@@ -10,26 +10,28 @@ module "rds-maria-as" {
 
   identifier = "rds-${var.service}-${var.environment}-${var.rds_mariadb_as_name}"
 
-  engine                       = var.rds_mariadb_as_engine
-  engine_version               = var.rds_mariadb_as_engine_version
-  family                       = var.rds_mariadb_as_family               # DB parameter group
-  major_engine_version         = var.rds_mariadb_as_major_engine_version # DB option group
-  parameter_group_name         = "rdspg-${var.service}-${var.environment}-${var.rds_mariadb_as_name}"
-  instance_class               = var.rds_mariadb_as_instance_class
-  option_group_name            = "rdsog-${var.service}-${var.environment}-${var.rds_mariadb_as_name}"
-  option_group_use_name_prefix = false
-  option_group_description     = "MariaDB option group for ${var.service}-${var.environment}-${var.rds_mariadb_as_name}"
+  engine                          = var.rds_mariadb_as_engine
+  engine_version                  = var.rds_mariadb_as_engine_version
+  family                          = var.rds_mariadb_as_family               # DB parameter group
+  major_engine_version            = var.rds_mariadb_as_major_engine_version # DB option group
+  parameter_group_name            = "rdspg-${var.service}-${var.environment}-${var.rds_mariadb_as_name}"
+  parameter_group_use_name_prefix = false
+  parameter_group_description     = "MariaDB parameter group for ${var.service}-${var.environment}-${var.rds_mariadb_as_name}"
+  instance_class                  = var.rds_mariadb_as_instance_class
+  option_group_name               = "rdsog-${var.service}-${var.environment}-${var.rds_mariadb_as_name}"
+  option_group_use_name_prefix    = false
+  option_group_description        = "MariaDB option group for ${var.service}-${var.environment}-${var.rds_mariadb_as_name}"
 
   storage_encrypted = true
   storage_type      = "gp3"
   # max_allocated_storage = var.rds_mariadb_as_allocated_storage * 1.1
-  kms_key_id        = module.kms-rds.key_arn
+  kms_key_id        = var.enable_kms_rds == true ? module.kms-rds.key_arn : data.aws_kms_key.rds[0].arn
   allocated_storage = var.rds_mariadb_as_allocated_storage
 
   # NOTE: Do NOT use 'user' as the value for 'username' as it throws:
   # "Error creating DB Instance: InvalidParameterValue: MasterUsername
   # user cannot be used as it is a reserved word used by the engine"
-  db_name  = "MariaDB"
+  db_name  = var.rds_mariadb_as_db_name
   username = var.rds_mariadb_as_username
   password = var.rds_mariadb_as_password
   port     = var.rds_mariadb_as_port

@@ -12,24 +12,26 @@ module "rds-postgresql-da" {
 
   identifier = "rds-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
 
-  engine               = var.rds_postgresql_da_engine
-  engine_version       = var.rds_postgresql_da_engine_version
-  family               = var.rds_postgresql_da_family               # DB parameter group
-  major_engine_version = var.rds_postgresql_da_major_engine_version # DB option group
-  parameter_group_name = "rdspg-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
-  instance_class       = var.rds_postgresql_da_instance_class
+  engine                          = var.rds_postgresql_da_engine
+  engine_version                  = var.rds_postgresql_da_engine_version
+  family                          = var.rds_postgresql_da_family               # DB parameter group
+  major_engine_version            = var.rds_postgresql_da_major_engine_version # DB option group
+  parameter_group_name            = "rdspg-${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
+  parameter_group_use_name_prefix = false
+  parameter_group_description     = "parameter group for ${var.service}-${var.environment}-${var.rds_postgresql_da_name}"
+  instance_class                  = var.rds_postgresql_da_instance_class
 
   storage_encrypted = true
   storage_type      = "gp3"
   # max_allocated_storage = var.rds_postgresql_da_allocated_storage * 1.1
 
-  kms_key_id        = module.kms-rds.key_arn
+  kms_key_id        = var.enable_kms_rds == true ? module.kms-rds.key_arn : data.aws_kms_key.rds[0].arn
   allocated_storage = var.rds_postgresql_da_allocated_storage
 
   # NOTE: Do NOT use 'user' as the value for 'username' as it throws:
   # "Error creating DB Instance: InvalidParameterValue: MasterUsername
   # user cannot be used as it is a reserved word used by the engine"
-  db_name  = "Postgresql"
+  db_name  = var.rds_postgresql_da_db_name
   username = var.rds_postgresql_da_username
   password = var.rds_postgresql_da_password
   port     = var.rds_postgresql_da_port

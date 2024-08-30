@@ -19,11 +19,25 @@ variable "rds_aurora_cluster_engine_version" {
   default     = "14.7"
 }
 
+# RDS Aurora Cluster Parameter Group Family
+variable "rds_aurora_cluster_pg_family" {
+  description = "RDS Aurora Cluster Parameter Group Family"
+  type        = string
+  default     = "aurora-postgresql14"
+}
+
 # RDS Aurora Cluster Instance Class
 variable "rds_aurora_cluster_instance_class" {
   description = "RDS Aurora Cluster Instance Class"
   type        = string
   default     = ""
+}
+
+# RDS Aurora Cluster Database Name
+variable "rds_aurora_cluster_database_name" {
+  description = "RDS Aurora Cluster Database Name"
+  type        = string
+  default     = "aurora_db"
 }
 
 # RDS Aurora Master Username

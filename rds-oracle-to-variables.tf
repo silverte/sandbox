@@ -48,6 +48,13 @@ variable "rds_oracle_to_allocated_storage" {
   default     = 500
 }
 
+# RDS Name
+variable "rds_oracle_to_db_name" {
+  description = "RDS Database Name"
+  type        = string
+  default     = "oracleto"
+}
+
 # RDS Oracle To-Be Username
 variable "rds_oracle_to_username" {
   description = "RDS Oracle To-Be Username"

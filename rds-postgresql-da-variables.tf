@@ -47,6 +47,13 @@ variable "rds_postgresql_da_allocated_storage" {
   default     = 500
 }
 
+# RDS DB Name
+variable "rds_postgresql_da_db_name" {
+  description = "RDS DB Name"
+  type        = string
+  default     = ""
+}
+
 # RDS PostgreSQL DA Username
 variable "rds_postgresql_da_username" {
   description = "RDS PostgreSQL DA Username"
