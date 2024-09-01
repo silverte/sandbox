@@ -19,6 +19,13 @@ variable "elasticache_cluster_instance_class" {
   default     = "cache.t4g.small"
 }
 
+# Elasticache Cluster Parameter Group Family
+variable "elasticache_cluster_parameter_group_family" {
+  description = "Elasticache Cluster Parameter Group Family"
+  type        = string
+  default     = "redis7"
+}
+
 # Whether to create an ElastiCache Data (True or False)
 variable "enable_elasticache_data" {
   description = "Whether to create an ElastiCache Data"

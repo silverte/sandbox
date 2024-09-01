@@ -4,9 +4,9 @@ terraform {
 
   # Configure the S3 backend
   backend "s3" {
-    bucket = "s3-ezwel-terraform-state"
+    bucket = "s3-heg-sandbox-terraform-state"
     key    = "sandbox/terraform.tfstate"
-    region = "us-west-2"
+    region = "ap-northeast-2"
   }
 
   required_providers {

@@ -46,9 +46,9 @@ module "elasticache-data" {
   availability_zone = element(module.vpc.azs, 0)
 
   # Parameter Group
-  create_parameter_group = true
-  parameter_group_name   = "ecpg-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
-  # parameter_group_family      = "redis7"
+  create_parameter_group      = true
+  parameter_group_name        = "ecpg-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
+  parameter_group_family      = var.elasticache_cluster_parameter_group_family
   parameter_group_description = "elasticache parameter group"
   parameters                  = []
 

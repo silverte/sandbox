@@ -4,3 +4,10 @@ variable "enable_kms_rds" {
   type        = bool
   default     = true
 }
+
+# Management Account KMS Key ARN
+variable "management_rds_key_arn" {
+  description = "Management Account KMS Key ARN"
+  type        = string
+  default     = ""
+}

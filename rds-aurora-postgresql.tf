@@ -41,7 +41,7 @@ module "aurora-postgresql" {
     }
   }
   storage_encrypted                          = true
-  storage_type                               = "gp3"
+  storage_type                               = "aurora"
   kms_key_id                                 = var.enable_kms_rds == true ? module.kms-rds.key_arn : data.aws_kms_key.rds[0].arn
   apply_immediately                          = true
   skip_final_snapshot                        = true
