@@ -19,9 +19,17 @@ module "ec2_bastion" {
   key_name                    = module.key_pair_bastion.key_pair_name
 
   create_iam_instance_profile = true
-  iam_role_description        = "IAM role for EC2 instance"
+  iam_role_name               = "role-${var.service}-${var.environment}-bastion-instance-profile"
+  iam_role_use_name_prefix    = false
+  iam_role_tags = merge(
+    local.tags,
+    {
+      "Name" = "role-${var.service}-${var.environment}-bastion-instance-profile"
+    },
+  )
+  iam_role_description = "IAM role for EC2 instance"
   iam_role_policies = {
-    AmazonEKSClusterPolicy = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+    AmazonEKSClusterPolicy = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
     # AdministratorAccess = "arn:aws:iam::aws:policy/AdministratorAccess"
   }
 
@@ -84,9 +92,9 @@ module "security_group_ec2_bastion" {
   description     = "Security group for EC2 Bastion"
   vpc_id          = module.vpc.vpc_id
 
-  ingress_cidr_blocks = ["0.0.0.0/0"]
-  ingress_rules       = ["http-80-tcp", "all-icmp"]
-  egress_rules        = ["all-all"]
+  # ingress_cidr_blocks = ["0.0.0.0/0"]
+  # ingress_rules       = ["http-80-tcp", "all-icmp"]
+  egress_rules = ["all-all"]
 
   tags = merge(
     local.tags,

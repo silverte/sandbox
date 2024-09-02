@@ -83,9 +83,9 @@ module "security_group_ec2_imdg" {
   description     = "Security group for EC2 Nexus"
   vpc_id          = module.vpc.vpc_id
 
-  ingress_cidr_blocks = ["0.0.0.0/0"]
-  ingress_rules       = ["http-80-tcp", "all-icmp"]
-  egress_rules        = ["all-all"]
+  # ingress_cidr_blocks = ["0.0.0.0/0"]
+  # ingress_rules       = ["http-80-tcp", "all-icmp"]
+  egress_rules = ["all-all"]
 
   tags = merge(
     local.tags,

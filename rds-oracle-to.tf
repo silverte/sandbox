@@ -40,6 +40,7 @@ module "rds-oracle-to" {
   multi_az               = false
   availability_zone      = element(module.vpc.azs, 0)
   db_subnet_group_name   = module.vpc.database_subnet_group
+  subnet_ids             = [element(module.vpc.database_subnets, 0)]
   vpc_security_group_ids = [module.security_group_oracle_to.security_group_id]
 
   # maintenance_window              = "Mon:00:00-Mon:03:00"

@@ -19,12 +19,15 @@ module "aurora-postgresql-da" {
     1 = {
       instance_class      = var.rds_aurora_cluster_instance_class
       publicly_accessible = false
+      availability_zones  = [element(module.vpc.azs, 0)]
+      subnet_ids          = [element(module.vpc.database_subnets, 0)]
       # db_parameter_group_name = "default.aurora-postgresql14"
     }
   }
   vpc_id               = module.vpc.vpc_id
   db_subnet_group_name = module.vpc.database_subnet_group_name
-  publicly_accessible  = false
+  // Only Sandbox, Dev, Stg
+  publicly_accessible = false
 
   security_group_name            = "scg-${var.service}-${var.environment}-${var.rds_aurora_da_cluster_name}"
   security_group_use_name_prefix = false
