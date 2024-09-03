@@ -26,6 +26,13 @@ variable "elasticache_cluster_parameter_group_family" {
   default     = "redis7"
 }
 
+# Elasticache Cluster Port
+variable "elasticache_cluster_port" {
+  description = "Elasticache Cluster Port"
+  type        = number
+  default     = 6379
+}
+
 # Whether to create an ElastiCache Data (True or False)
 variable "enable_elasticache_data" {
   description = "Whether to create an ElastiCache Data"

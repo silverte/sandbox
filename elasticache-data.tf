@@ -7,15 +7,20 @@ module "elasticache-data" {
   source = "terraform-aws-modules/elasticache/aws"
   create = var.enable_elasticache_data
 
-  cluster_id               = "ec-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
-  create_cluster           = false
-  create_replication_group = false
+  cluster_id                = "ec-${var.service}-${var.environment}-${var.elasticache_cluster_name}"
+  create_cluster            = true
+  cluster_mode_enabled      = false
+  create_replication_group  = false
+  multi_az_enabled          = false
+  automatic_failover_enabled = false
 
   engine_version = var.elasticache_cluster_engine_version
+  port           = var.elasticache_cluster_port
   node_type      = var.elasticache_cluster_instance_class
 
   # maintenance_window = "sun:05:00-sun:09:00"
   # apply_immediately  = true
+  auto_minor_version_upgrade = false
 
   # Security Group
   vpc_id                         = module.vpc.vpc_id
@@ -36,6 +41,10 @@ module "elasticache-data" {
       cidr_ipv4   = module.vpc.vpc_cidr_block
     }
   }
+
+  at_rest_encryption_enabled = true
+  transit_encryption_enabled = true
+  transit_encryption_mode = "preferred"
 
   # Subnet Group
   subnet_group_name        = "ecsg-${var.service}-${var.environment}"

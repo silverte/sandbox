@@ -19,8 +19,7 @@ module "aurora-postgresql" {
     1 = {
       instance_class      = var.rds_aurora_cluster_instance_class
       publicly_accessible = false
-      availability_zones  = [element(module.vpc.azs, 0)]
-      subnet_ids          = [element(module.vpc.database_subnets, 0)]
+      availability_zone  = element(module.vpc.azs, 0)
       # db_parameter_group_name = "default.aurora-postgresql14"
     }
   }
