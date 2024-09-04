@@ -69,7 +69,7 @@ module "ec2_bastion" {
       kms_key_id = var.enable_kms_ebs == true ? module.kms-ebs.key_arn : data.aws_kms_key.ebs[0].arn
       tags = {
         Name       = "ec2-bastion-data-block"
-        MountPoint = "/mnt/data"
+        MountPoint = "/data"
       }
     }
   ]

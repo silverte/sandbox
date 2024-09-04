@@ -60,7 +60,7 @@ module "ec2_nexus" {
       kms_key_id = var.enable_kms_ebs == true ? module.kms-ebs.key_arn : data.aws_kms_key.ebs[0].arn
       tags = {
         Name       = "ec2-nexus-data-block"
-        MountPoint = "/mnt/data"
+        MountPoint = "/data"
       }
     }
   ]
