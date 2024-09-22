@@ -6,7 +6,7 @@
 ################################################################################
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.11"
+  version = "~> 20.24"
   create  = var.enable_cluster
 
   # TO-DO 클러스터 Secret 암호화 적용 확인
@@ -52,6 +52,9 @@ module "eks" {
       configuration_values = jsonencode({
         env = {
           # Reference docs https://docs.aws.amazon.com/eks/latest/userguide/cni-increase-ip-addresses.html
+          # 관리형 노드 그룹은 maxPods의 값에 최대 수를 적용합니다. vCPU가 30개 미만인 인스턴스의 경우 최대 수는 110이고 
+          # 다른 모든 인스턴스의 경우 최대 수는 250입니다. 이 최대 수는 접두사 위임의 활성화 여부에 관계없이 적용됩니다.
+          # kubectl describe node ip-192-168-30-193.region-code.compute.internal | grep 'pods\|PrivateIPv4Address'
           ENABLE_PREFIX_DELEGATION = "true"
           WARM_PREFIX_TARGET       = "1"
         }
@@ -59,14 +62,17 @@ module "eks" {
         enableNetworkPolicy : "true",
       })
     }
-    # aws-ebs-csi-driver = {
-    #   most_recent = true
-    # }
+    aws-ebs-csi-driver = {
+      most_recent              = true
+      service_account_role_arn = try(module.ebs_csi_irsa_role[0].iam_role_arn, "")
+    }
     aws-efs-csi-driver = {
-      most_recent = true
+      most_recent              = true
+      service_account_role_arn = try(module.efs_csi_irsa_role[0].iam_role_arn, "")
     }
     aws-mountpoint-s3-csi-driver = {
-      most_recent = true
+      most_recent              = true
+      service_account_role_arn = try(module.mountpoint_s3_csi_irsa_role[0].iam_role_arn, "")
     }
   }
 
@@ -98,6 +104,13 @@ module "eks" {
 
       lanch_template_name             = "ekslt-${var.environment}-mgmt"
       launch_template_use_name_prefix = false
+      enable_monitoring               = false
+      launch_template_tags = merge(
+        local.tags,
+        {
+          "Name" = "ekslt-${var.service}-${var.environment}-mgmt"
+        }
+      )
 
       min_size     = 1
       max_size     = 2
@@ -112,26 +125,32 @@ module "eks" {
         },
       }
     },
-    app = {
-      # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
-      ami_type        = "AL2023_ARM_64_STANDARD"
-      name            = "eksng-${var.environment}-app"
-      use_name_prefix = false
-      instance_types  = ["c7g.2xlarge"]
-      capacity_type   = "ON_DEMAND"
+    # app = {
+    #   # Starting on 1.30, AL2023 is the default AMI type for EKS managed node groups
+    #   ami_type        = "AL2023_ARM_64_STANDARD"
+    #   name            = "eksng-${var.environment}-app"
+    #   use_name_prefix = false
+    #   instance_types  = ["c7g.large"]
+    #   capacity_type   = "ON_DEMAND"
 
-      lanch_template_name             = "ekslt-${var.environment}-app"
-      launch_template_use_name_prefix = false
+    #   lanch_template_name             = "ekslt-${var.environment}-app"
+    #   launch_template_use_name_prefix = false
+    #   enable_monitoring               = false
+    #   launch_template_tags = merge(
+    #     local.tags,
+    #     {
+    #       "Name" = "ekslt-${var.service}-${var.environment}-app"
+    #     }
+    #   )
 
-      min_size     = 0
-      max_size     = 2
-      desired_size = 0
+    #   min_size     = 1
+    #   max_size     = 2
+    #   desired_size = 1
 
-      labels = {
-        node_type = "app"
-      }
-
-    }
+    #   labels = {
+    #     node_type = "app"
+    #   }
+    # }
   }
 
   #  EKS K8s API cluster needs to be able to talk with the EKS worker nodes with port 15017/TCP and 15012/TCP which is used by Istio
@@ -161,6 +180,71 @@ module "eks" {
       "Name" = "eks-${var.service}-${var.environment}"
     }
   )
+}
+
+module "efs_csi_irsa_role" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  count  = var.enable_cluster ? 1 : 0
+
+  role_name             = "role-${var.service}-${var.environment}-efs-csi-driver"
+  attach_efs_csi_policy = true
+  tags = merge(
+    local.tags,
+    {
+      "Name" = "role-${var.service}-${var.environment}-efs-csi-driver"
+    }
+  )
+
+  oidc_providers = {
+    ex = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:efs-csi-controller-sa"]
+    }
+  }
+}
+
+module "ebs_csi_irsa_role" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  count  = var.enable_cluster ? 1 : 0
+
+  role_name             = "role-${var.service}-${var.environment}-ebs-csi-controller"
+  attach_ebs_csi_policy = true
+  tags = merge(
+    local.tags,
+    {
+      "Name" = "role-${var.service}-${var.environment}-ebs-csi-controller"
+    }
+  )
+
+  oidc_providers = {
+    ex = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+}
+
+module "mountpoint_s3_csi_irsa_role" {
+  source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  count  = var.enable_cluster ? 1 : 0
+
+  role_name = "role-${var.service}-${var.environment}-s3-csi-driver"
+  tags = merge(
+    local.tags,
+    {
+      "Name" = "role-${var.service}-${var.environment}-s3-csi-driver"
+    }
+  )
+  attach_mountpoint_s3_csi_policy = true
+  mountpoint_s3_csi_bucket_arns   = ["arn:aws:s3:::mountpoint-s3-csi-bucket"]
+  mountpoint_s3_csi_path_arns     = ["arn:aws:s3:::mountpoint-s3-csi-bucket/example/*"]
+
+  oidc_providers = {
+    ex = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:s3-csi-driver-sa"]
+    }
+  }
 }
 
 # output "configure_kubectl" {

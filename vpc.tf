@@ -5,18 +5,18 @@
 module "vpc" {
   source     = "terraform-aws-modules/vpc/aws"
   version    = "5.13.0"
-  create_vpc = var.enable_vpc_dev
+  create_vpc = var.enable_vpc
 
   # Details
   name                = "vpc-${var.service}-${var.environment}"
-  cidr                = var.cidr_dev
+  cidr                = var.cidr
   azs                 = local.azs
-  public_subnets      = var.public_subnets_dev
-  private_subnets     = var.private_subnets_dev
-  intra_subnets       = var.endpoint_subnets_dev
-  database_subnets    = var.database_subnets_dev
-  elasticache_subnets = var.elb_subnets_dev
-  redshift_subnets    = var.tgw_attach_subnets_dev
+  public_subnets      = var.public_subnets
+  private_subnets     = var.private_subnets
+  intra_subnets       = var.endpoint_subnets
+  database_subnets    = var.database_subnets
+  elasticache_subnets = var.elb_subnets
+  redshift_subnets    = var.tgw_attach_subnets
 
   manage_default_route_table    = false
   manage_default_network_acl    = false
@@ -47,8 +47,8 @@ module "vpc" {
   igw_tags = { "Name" : "igw-${var.service}-${var.environment}" }
 
   # NAT Gateways - Outbound Communication
-  enable_nat_gateway = var.enable_nat_gateway_dev
-  single_nat_gateway = var.single_nat_gateway_dev
+  enable_nat_gateway = var.enable_nat_gateway
+  single_nat_gateway = var.single_nat_gateway
   nat_gateway_tags   = { "Name" : "nat-${var.service}-${var.environment}" }
   nat_eip_tags       = { "Name" : "eip-${var.service}-${var.environment}" }
 
@@ -154,8 +154,8 @@ module "vpc_endpoints" {
   }
   security_group_tags = merge(
     local.tags,
-    map("Name", "scg-${var.service}-${var.environment}-endpoint")
-  )
+    { "Name" = "scg-${var.service}-${var.environment}-endpoint"
+  })
 
   endpoints = merge({
     s3 = {
