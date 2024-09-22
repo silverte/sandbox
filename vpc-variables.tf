@@ -1,10 +1,3 @@
-# VPC Name
-variable "vpc_name" {
-  description = "VPC Name"
-  type        = string
-  default     = "vpc"
-}
-
 # VPC CIDR Block
 variable "cidr" {
   description = "VPC CIDR Block"
@@ -27,7 +20,7 @@ variable "private_subnets" {
 }
 
 # VPC Infra Subnets
-variable "infra_subnets" {
+variable "endpoint_subnets" {
   description = "A list of infra subnets inside the VPC"
   type        = list(string)
   default     = [""]
@@ -40,20 +33,19 @@ variable "database_subnets" {
   default     = [""]
 }
 
-# VPC Create Database Subnet Group (True / False)
-variable "create_database_subnet_group" {
-  description = "VPC Create Database Subnet Group, Controls if database subnet group should be created"
-  type        = bool
-  default     = true
+# VPC ELB Subnets
+variable "elb_subnets" {
+  description = "A list of ELB subnets inside the VPC"
+  type        = list(string)
+  default     = [""]
 }
 
-# VPC Create Database Subnet Route Table (True or False)
-variable "create_database_subnet_route_table" {
-  description = "VPC Create Database Subnet Route Table, Controls if separate route table for database should be created"
-  type        = bool
-  default     = true
+# VPC TGW Attachment Subnets
+variable "tgw_attach_subnets" {
+  description = "A list of TGW Attachment subnets inside the VPC"
+  type        = list(string)
+  default     = [""]
 }
-
 
 # VPC Enable NAT Gateway (True or False)
 variable "enable_nat_gateway" {
@@ -74,4 +66,18 @@ variable "enable_vpc" {
   description = "Whether to create an VPC"
   type        = bool
   default     = true
+}
+
+# VPC Flow Log (True or False)
+variable "enable_vpc_flow_log" {
+  description = "Whether to create an VPC Flow Log"
+  type        = bool
+  default     = false
+}
+
+# S3 ARN for VPC Flow Log Destination
+variable "vpc_flow_log_s3_arn" {
+  description = "S3 ARN for VPC Flow Log Destination"
+  type        = string
+  default     = ""
 }
